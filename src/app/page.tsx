@@ -150,7 +150,7 @@ export default function Portfolio() {
       </motion.section>
 
       {/* KNOWLEDGE SHARING (WORKSHOP) */}
-      <motion.section id="workshops" {...fadeUp} className="py-28 px-10 border-t border-white/5">
+      <motion.section id="workshop" {...fadeUp} className="py-28 px-10 border-t border-white/5">
         <div className="max-w-6xl mx-auto">
           <p className="text-center text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-20">Knowledge Sharing</p>
           {WORKSHOPS.map((ws, i) => (
