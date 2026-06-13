@@ -1,28 +1,28 @@
 "use client";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
-import { USER_INFO, PROJECTS, EXPERIENCE, SKILLS, CERTIFICATIONS, PUBLICATION, EDUCATION, COCURRICULAR } from "../lib/data";
- 
+import { USER_INFO, PROJECTS, EXPERIENCE, SKILLS, CERTIFICATIONS, PUBLICATION, EDUCATION, COCURRICULAR, Project } from "../lib/data";
+
 const fadeUp = { initial: { opacity: 0, y: 40 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true }, transition: { duration: 0.8 } };
 const stagger = (i: number) => ({ ...fadeUp, transition: { duration: 0.6, delay: i * 0.1 } });
- 
+
 export default function Portfolio() {
   const heroRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
- 
+
   return (
     <main className="relative text-white selection:bg-[#D4AF37]/40 scroll-smooth overflow-x-hidden font-sans"
       style={{ background: "radial-gradient(ellipse at 20% 0%, #1a1200 0%, #0a0a0a 40%, #000000 100%)" }}>
- 
+
       {/* Ambient glow orbs */}
       <div className="fixed inset-0 -z-10 pointer-events-none">
         <motion.div animate={{ scale: [1, 1.1, 1], opacity: [0.06, 0.1, 0.06] }} transition={{ duration: 8, repeat: Infinity }}
           className="absolute top-[-15%] left-[-10%] w-[60%] h-[60%] rounded-full bg-[#D4AF37] blur-[140px]" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-blue-950/40 blur-[160px]" />
       </div>
- 
+
       {/* NAV */}
       <nav className="fixed top-0 w-full z-50 backdrop-blur-md border-b border-white/5 bg-black/30">
         <div className="max-w-7xl mx-auto px-8 h-20 flex items-center justify-between">
@@ -40,7 +40,7 @@ export default function Portfolio() {
           </motion.div>
         </div>
       </nav>
- 
+
       {/* HERO */}
       <section ref={heroRef} className="h-screen flex flex-col justify-center items-center text-center px-6 pt-20">
         <motion.div style={{ y: heroY, opacity: heroOpacity }}>
@@ -61,7 +61,7 @@ export default function Portfolio() {
           </motion.div>
         </motion.div>
       </section>
- 
+
       {/* ABOUT */}
       <motion.section id="about" {...fadeUp} className="py-32 px-10">
         <div className="max-w-4xl mx-auto text-center">
@@ -73,7 +73,7 @@ export default function Portfolio() {
           </a>
         </div>
       </motion.section>
- 
+
       {/* SKILLS */}
       <motion.section {...fadeUp} className="py-24 px-10">
         <div className="max-w-6xl mx-auto bg-white/[0.02] border border-white/10 rounded-[3rem] p-16 backdrop-blur-3xl">
@@ -93,7 +93,7 @@ export default function Portfolio() {
           </div>
         </div>
       </motion.section>
- 
+
       {/* EDUCATION */}
       <motion.section id="education" {...fadeUp} className="py-32 px-10 border-y border-white/5">
         <div className="max-w-6xl mx-auto">
@@ -118,7 +118,7 @@ export default function Portfolio() {
           </div>
         </div>
       </motion.section>
- 
+
       {/* EXPERIENCE */}
       <motion.section id="experience" {...fadeUp} className="py-40 px-6 border-b border-white/5">
         <div className="max-w-6xl mx-auto text-center">
@@ -139,7 +139,7 @@ export default function Portfolio() {
           ))}
         </div>
       </motion.section>
- 
+
       {/* PUBLICATION */}
       <motion.section {...fadeUp} className="py-28 px-10">
         <div className="max-w-5xl mx-auto p-14 bg-gradient-to-r from-[#D4AF37]/10 to-transparent border border-[#D4AF37]/20 rounded-[3rem]">
@@ -148,14 +148,17 @@ export default function Portfolio() {
           <p className="text-gray-400 text-lg leading-relaxed">{PUBLICATION.details}</p>
         </div>
       </motion.section>
- 
+
       {/* PROJECTS */}
       <section id="projects" className="py-32 px-10 max-w-7xl mx-auto">
         <motion.p {...fadeUp} className="text-center text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-24">Intelligence Registry</motion.p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
-          {PROJECTS.map((project, i) => (
+          {PROJECTS.map((project: Project, i: number) => (
             <motion.div key={i} {...stagger(i)} whileHover={{ y: -8 }} transition={{ duration: 0.3 }}
               className="group bg-white/[0.02] border border-white/10 rounded-[3rem] overflow-hidden hover:border-[#D4AF37]/30 transition-all">
+              <div className="h-[380px] overflow-hidden">
+                <img src={project.image} alt={project.title} className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000" />
+              </div>
               <div className="p-12">
                 <h4 className="text-3xl font-bold mb-4 group-hover:text-[#D4AF37] transition-colors uppercase">{project.title}</h4>
                 <p className="text-gray-500 leading-relaxed mb-8">{project.desc}</p>
@@ -164,14 +167,18 @@ export default function Portfolio() {
                     <span key={tag} className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#D4AF37] bg-[#D4AF37]/5 px-5 py-2 rounded-xl border border-[#D4AF37]/10">{tag}</span>
                   ))}
                 </div>
-                {/* Repo Link */}
-                <a href={project.repo} target="_blank" rel="noopener noreferrer" className="text-sm font-bold text-white border-b border-[#D4AF37] pb-1 hover:text-[#D4AF37]">VIEW REPOSITORY</a>
+                {/* Repo Link - only shows if it exists in data.ts */}
+                {project.repo && project.repo.length > 0 && (
+                  <a href={project.repo} target="_blank" rel="noopener noreferrer" className="text-sm font-bold text-white border-b border-[#D4AF37] pb-1 hover:text-[#D4AF37] transition-colors">
+                    VIEW REPOSITORY
+                  </a>
+                )}
               </div>
             </motion.div>
           ))}
         </div>
       </section>
- 
+
       {/* CO-CURRICULAR */}
       <motion.section id="activities" {...fadeUp} className="py-32 px-10 border-t border-white/5">
         <div className="max-w-5xl mx-auto">
@@ -189,7 +196,7 @@ export default function Portfolio() {
           </div>
         </div>
       </motion.section>
- 
+
       {/* CERTS + HACKATHON */}
       <motion.section {...fadeUp} className="py-32 px-10 border-t border-white/5">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16">
@@ -214,7 +221,7 @@ export default function Portfolio() {
           </motion.div>
         </div>
       </motion.section>
- 
+
       <footer className="py-20 text-center text-gray-800 text-[11px] tracking-[1.5em] uppercase border-t border-white/5">
         MAHA VAARSHINIE RAJOO • 2026
       </footer>
