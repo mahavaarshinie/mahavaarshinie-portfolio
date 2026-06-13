@@ -58,28 +58,27 @@ export const EXPERIENCE = [
   }
 ];
 
-// Update your COCURRICULAR array in src/lib/data.ts
 export const COCURRICULAR = [
   { 
     role: "Flood Cleanup Volunteer", 
     organisation: "MMU Superheroes", 
     category: "Social Services", 
     date: null,
-    images: [] 
+    images: ["/scc-3.jpg"] 
   },
   { 
     role: "Member of Business Operation Division", 
     organisation: "Students' College Committee (MMU)", 
     category: "Student Committee", 
     date: "Jul 2023 – Dec 2023",
-    images: [] 
+    images: ["/scc-2.jpg"] 
   },
   { 
     role: "Assistant Head of Resident's Welfare Division", 
     organisation: "Students' College Committee (MMU)", 
     category: "Student Committee", 
     date: "Jan 2024 – Dec 2024",
-    images: ["/scc-1.jpg", "/scc-2.jpg", "/scc-3.jpg"] // Your 3 images
+    images: ["/scc-1.jpg"] 
   }
 ];
 
