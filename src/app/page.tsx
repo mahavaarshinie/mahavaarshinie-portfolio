@@ -230,16 +230,24 @@ export default function Portfolio() {
 
       {/* CO-CURRICULAR */}
       <motion.section id="activities" {...fadeUp} className="py-32 px-10 border-t border-white/5">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <p className="text-center text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-20">Leadership & Volunteering</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {COCURRICULAR.map((item, i) => (
-              <motion.div key={i} {...stagger(i)} whileHover={{ scale: 1.02 }}
-                className="group bg-white/[0.02] border border-white/10 rounded-3xl p-10 hover:border-[#D4AF37]/30 transition-all">
+              <motion.div key={i} {...stagger(i)} className="group bg-white/[0.02] border border-white/10 rounded-3xl p-10 hover:border-[#D4AF37]/30 transition-all flex flex-col h-full">
                 <span className="text-[9px] uppercase tracking-[0.3em] text-[#D4AF37]/60 font-bold mb-3 block">{item.category}</span>
                 <h3 className="text-base font-bold text-white/90 mb-2 group-hover:text-[#D4AF37] transition-colors">{item.role}</h3>
                 <p className="text-gray-500 text-sm italic mb-3">{item.organisation}</p>
-                {item.date && <span className="text-[10px] font-mono tracking-widest text-gray-600 uppercase">{item.date}</span>}
+                {item.date && <span className="text-[10px] font-mono tracking-widest text-gray-600 uppercase mb-6">{item.date}</span>}
+                
+                {/* Image Gallery for SCC */}
+                {item.images && item.images.length > 0 && (
+                  <div className="mt-auto grid grid-cols-1 gap-2">
+                    {item.images.map((img, idx) => (
+                      <img key={idx} src={img} alt={`SCC ${idx + 1}`} className="rounded-xl w-full h-32 object-cover" />
+                    ))}
+                  </div>
+                )}
               </motion.div>
             ))}
           </div>
