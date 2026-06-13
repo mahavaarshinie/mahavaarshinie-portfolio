@@ -119,7 +119,16 @@ export default function Portfolio() {
         </div>
       </motion.section>
 
-      {/* KNOWLEDGE SHARING / WORKSHOP SECTION */}
+      {/* PUBLICATION */}
+      <motion.section {...fadeUp} className="py-28 px-10">
+        <div className="max-w-5xl mx-auto p-14 bg-gradient-to-r from-[#D4AF37]/10 to-transparent border border-[#D4AF37]/20 rounded-[3rem]">
+          <p className="text-[#D4AF37] uppercase tracking-widest text-[10px] font-bold mb-6">Selected Publication</p>
+          <h3 className="text-3xl font-bold mb-5 italic leading-tight">"{PUBLICATION.title}"</h3>
+          <p className="text-gray-400 text-lg leading-relaxed">{PUBLICATION.details}</p>
+        </div>
+      </motion.section>
+
+       {/* KNOWLEDGE SHARING / WORKSHOP SECTION */}
       <motion.section id="workshops" {...fadeUp} className="py-28 px-10 border-t border-white/5">
         <div className="max-w-6xl mx-auto">
           <p className="text-center text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-16">Knowledge Sharing</p>
@@ -143,42 +152,6 @@ export default function Portfolio() {
                     className="rounded-2xl w-full h-72 object-cover hover:scale-[1.02] transition-transform duration-300" 
                   />
                 ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </motion.section>
-
-      {/* PUBLICATION */}
-      <motion.section {...fadeUp} className="py-28 px-10">
-        <div className="max-w-5xl mx-auto p-14 bg-gradient-to-r from-[#D4AF37]/10 to-transparent border border-[#D4AF37]/20 rounded-[3rem]">
-          <p className="text-[#D4AF37] uppercase tracking-widest text-[10px] font-bold mb-6">Selected Publication</p>
-          <h3 className="text-3xl font-bold mb-5 italic leading-tight">"{PUBLICATION.title}"</h3>
-          <p className="text-gray-400 text-lg leading-relaxed">{PUBLICATION.details}</p>
-        </div>
-      </motion.section>
-
-     {/* KNOWLEDGE SHARING / WORKSHOP SECTION */}
-      <motion.section id="workshops" {...fadeUp} className="py-28 px-10 border-t border-white/5">
-        <div className="max-w-6xl mx-auto">
-          <p className="text-center text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-20">Knowledge Sharing</p>
-          {WORKSHOP.map((ws: Workshop, i: number) => (
-            <div key={i} className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-              {/* Vertical alignment: 3 images stacked */}
-              <div className="flex flex-col gap-4">
-                {ws.images.map((img: string, idx: number) => (
-                  <img 
-                    key={idx} 
-                    src={img} 
-                    alt={`Workshop ${idx + 1}`} 
-                    className="rounded-2xl w-full h-80 object-cover" 
-                  />
-                ))}
-              </div>
-              <div>
-                <h3 className="text-3xl font-bold mb-4">{ws.title}</h3>
-                <p className="text-[#D4AF37] text-sm mb-6">{ws.organisation} • {ws.date}</p>
-                <p className="text-gray-400 leading-relaxed text-lg">{ws.desc}</p>
               </div>
             </div>
           ))}
