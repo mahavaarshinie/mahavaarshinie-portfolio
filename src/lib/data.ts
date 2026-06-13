@@ -1,4 +1,13 @@
-export const PROJECTS = [
+// Add this interface at the top of your lib/data.ts
+export interface Project {
+  title: string;
+  desc: string;
+  tags: string[];
+  image: string;
+  repo?: string; // The '?' makes this field optional
+}
+
+export const PROJECTS: Project[] = [
   { 
     title: "Deepfake Detection Framework", 
     desc: "Achieved 98.05% accuracy using Dual-Stream Hybrid CNN with RNN, LSTM, and Transformers.", 
@@ -28,3 +37,5 @@ export const PROJECTS = [
     repo: "https://github.com/mahavaarshinie/Online-Tutor-Finding-System"
   }
 ];
+
+// Keep your existing USER_INFO, SKILLS, EDUCATION, etc., below this...
