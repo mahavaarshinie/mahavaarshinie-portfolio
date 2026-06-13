@@ -52,10 +52,8 @@ export default function Portfolio() {
           </motion.h1>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}
             className="flex gap-12 justify-center">
-            {/* Added Resume Link */}
             <a href="/resume.pdf" target="_blank" rel="noopener noreferrer"
               className="text-gray-500 hover:text-white transition-all text-sm font-bold tracking-widest border-b border-white/10 hover:border-[#D4AF37] pb-1">RESUME</a>
-            {/* Existing Links */}
             {[["LINKEDIN", USER_INFO.linkedin], ["GITHUB", USER_INFO.github]].map(([label, href]) => (
               <a key={label} href={href} target="_blank"
                 className="text-gray-500 hover:text-white transition-all text-sm font-bold tracking-widest border-b border-white/10 hover:border-[#D4AF37] pb-1">{label}</a>
@@ -158,17 +156,16 @@ export default function Portfolio() {
           {PROJECTS.map((project, i) => (
             <motion.div key={i} {...stagger(i)} whileHover={{ y: -8 }} transition={{ duration: 0.3 }}
               className="group bg-white/[0.02] border border-white/10 rounded-[3rem] overflow-hidden hover:border-[#D4AF37]/30 transition-all">
-              <div className="h-[380px] overflow-hidden">
-                <img src={project.image} alt={project.title} className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000" />
-              </div>
               <div className="p-12">
                 <h4 className="text-3xl font-bold mb-4 group-hover:text-[#D4AF37] transition-colors uppercase">{project.title}</h4>
                 <p className="text-gray-500 leading-relaxed mb-8">{project.desc}</p>
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap gap-3 mb-8">
                   {project.tags.map(tag => (
                     <span key={tag} className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#D4AF37] bg-[#D4AF37]/5 px-5 py-2 rounded-xl border border-[#D4AF37]/10">{tag}</span>
                   ))}
                 </div>
+                {/* Repo Link */}
+                <a href={project.repo} target="_blank" rel="noopener noreferrer" className="text-sm font-bold text-white border-b border-[#D4AF37] pb-1 hover:text-[#D4AF37]">VIEW REPOSITORY</a>
               </div>
             </motion.div>
           ))}
