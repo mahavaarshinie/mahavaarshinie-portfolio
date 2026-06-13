@@ -1,11 +1,12 @@
 // src/lib/data.ts
 
+// 1. Define the Interface to fix the build errors
 export interface Project {
   title: string;
   desc: string;
   tags: string[];
   image: string;
-  repo?: string;
+  repo?: string; // '?' makes this optional for projects without a link
 }
 
 export const USER_INFO = {
@@ -54,6 +55,7 @@ export const COCURRICULAR = [
   { role: "Assistant Head of Resident's Welfare Division", organisation: "Students' College Committee (MMU)", category: "Student Committee", date: "Jan 2024 – Dec 2024" }
 ];
 
+// 2. Use the 'Project' type defined above for the array
 export const PROJECTS: Project[] = [
   { 
     title: "Deepfake Detection Framework", 
