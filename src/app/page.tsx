@@ -128,28 +128,28 @@ export default function Portfolio() {
         </div>
       </motion.section>
 
-       {/* KNOWLEDGE SHARING / WORKSHOP SECTION */}
-      <motion.section id="workshops" {...fadeUp} className="py-28 px-10 border-t border-white/5">
-        <div className="max-w-6xl mx-auto">
-          <p className="text-center text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-16">Knowledge Sharing</p>
+       {/* KNOWLEDGE SHARING (WORKSHOP) - Matches Publication Container Style */}
+      <motion.section id="workshops" {...fadeUp} className="py-28 px-10">
+        <div className="max-w-5xl mx-auto p-14 bg-gradient-to-r from-[#D4AF37]/10 to-transparent border border-[#D4AF37]/20 rounded-[3rem]">
+          <p className="text-[#D4AF37] uppercase tracking-widest text-[10px] font-bold mb-10">Knowledge Sharing</p>
           
           {WORKSHOP.map((ws: Workshop, i: number) => (
-            <div key={i} className="flex flex-col gap-12">
-              {/* Text Area */}
-              <div className="text-center max-w-3xl mx-auto">
-                <h3 className="text-4xl font-bold mb-4">{ws.title}</h3>
+            <div key={i} className="flex flex-col gap-10">
+              {/* Text Content */}
+              <div>
+                <h3 className="text-3xl font-bold mb-2">{ws.title}</h3>
                 <p className="text-[#D4AF37] text-sm mb-6">{ws.organisation} • {ws.date}</p>
                 <p className="text-gray-400 leading-relaxed text-lg">{ws.desc}</p>
               </div>
 
-              {/* Images Row: 3 images next to each other */}
+              {/* Images Row */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {ws.images.map((img: string, idx: number) => (
                   <img 
                     key={idx} 
                     src={img} 
                     alt={`Workshop ${idx + 1}`} 
-                    className="rounded-2xl w-full h-72 object-cover hover:scale-[1.02] transition-transform duration-300" 
+                    className="rounded-2xl w-full h-64 object-cover hover:scale-[1.02] transition-transform duration-300" 
                   />
                 ))}
               </div>
