@@ -54,7 +54,7 @@ export const EXPERIENCE = [
       "Managed and queried SQL databases for data analysis and reporting"
     ],
     // Images moved out of the tasks array
-    images: ["/intern-1.jpg", "/intern-2.jpg", "/intern-3.jpg"]
+    images: ["/intern-2.jpg", "/intern-1.jpg", "/intern-3.jpg"]
   }
 ];
 
