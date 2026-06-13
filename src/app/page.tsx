@@ -119,20 +119,29 @@ export default function Portfolio() {
         </div>
       </motion.section>
 
-      {/* EXPERIENCE */}
-      <motion.section id="experience" {...fadeUp} className="py-40 px-6 border-b border-white/5">
-        <div className="max-w-6xl mx-auto text-center">
-          <p className="text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-20">Professional Journey</p>
-          {EXPERIENCE.map((exp, i) => (
-            <div key={i}>
-              <motion.span {...fadeUp} className="text-gray-600 font-mono text-sm tracking-[0.3em] uppercase mb-6 block">{exp.date}</motion.span>
-              <motion.h3 {...fadeUp} className="text-5xl md:text-[7rem] font-bold mb-4 leading-none tracking-tighter uppercase">{exp.role}</motion.h3>
-              <motion.p {...fadeUp} className="text-xl text-gray-500 mb-14 italic uppercase">{exp.company}</motion.p>
-              <div className="flex flex-wrap justify-center gap-5 max-w-4xl mx-auto">
-                {exp.tasks.map((task, idx) => (
-                  <motion.span key={idx} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }} transition={{ delay: idx * 0.1 }}
-                    className="bg-white/5 border border-white/10 px-7 py-3 rounded-full text-xs text-gray-400">{task}</motion.span>
+      {/* KNOWLEDGE SHARING / WORKSHOP SECTION */}
+      <motion.section id="workshops" {...fadeUp} className="py-28 px-10 border-t border-white/5">
+        <div className="max-w-6xl mx-auto">
+          <p className="text-center text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-16">Knowledge Sharing</p>
+          
+          {WORKSHOP.map((ws: Workshop, i: number) => (
+            <div key={i} className="flex flex-col gap-12">
+              {/* Text Area */}
+              <div className="text-center max-w-3xl mx-auto">
+                <h3 className="text-4xl font-bold mb-4">{ws.title}</h3>
+                <p className="text-[#D4AF37] text-sm mb-6">{ws.organisation} • {ws.date}</p>
+                <p className="text-gray-400 leading-relaxed text-lg">{ws.desc}</p>
+              </div>
+
+              {/* Images Row: 3 images next to each other */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {ws.images.map((img: string, idx: number) => (
+                  <img 
+                    key={idx} 
+                    src={img} 
+                    alt={`Workshop ${idx + 1}`} 
+                    className="rounded-2xl w-full h-72 object-cover hover:scale-[1.02] transition-transform duration-300" 
+                  />
                 ))}
               </div>
             </div>
