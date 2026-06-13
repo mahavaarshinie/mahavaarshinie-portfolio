@@ -52,6 +52,10 @@ export default function Portfolio() {
           </motion.h1>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}
             className="flex gap-12 justify-center">
+            {/* Added Resume Link */}
+            <a href="/resume.pdf" target="_blank" rel="noopener noreferrer"
+              className="text-gray-500 hover:text-white transition-all text-sm font-bold tracking-widest border-b border-white/10 hover:border-[#D4AF37] pb-1">RESUME</a>
+            {/* Existing Links */}
             {[["LINKEDIN", USER_INFO.linkedin], ["GITHUB", USER_INFO.github]].map(([label, href]) => (
               <a key={label} href={href} target="_blank"
                 className="text-gray-500 hover:text-white transition-all text-sm font-bold tracking-widest border-b border-white/10 hover:border-[#D4AF37] pb-1">{label}</a>
