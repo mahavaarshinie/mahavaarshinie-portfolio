@@ -240,11 +240,11 @@ export default function Portfolio() {
                 <p className="text-gray-500 text-sm italic mb-3">{item.organisation}</p>
                 {item.date && <span className="text-[10px] font-mono tracking-widest text-gray-600 uppercase mb-6">{item.date}</span>}
                 
-                {/* Image Gallery for SCC */}
+                {/* Image Section */}
                 {item.images && item.images.length > 0 && (
-                  <div className="mt-auto grid grid-cols-1 gap-2">
+                  <div className="mt-auto pt-4">
                     {item.images.map((img, idx) => (
-                      <img key={idx} src={img} alt={`SCC ${idx + 1}`} className="rounded-xl w-full h-32 object-cover" />
+                      <img key={idx} src={img} alt={item.role} className="rounded-xl w-full h-48 object-cover border border-white/5" />
                     ))}
                   </div>
                 )}
