@@ -1,12 +1,19 @@
 // src/lib/data.ts
 
-// 1. Define the Interface to fix the build errors
 export interface Project {
   title: string;
   desc: string;
   tags: string[];
   image: string;
-  repo?: string; // '?' makes this optional for projects without a link
+  repo?: string;
+}
+
+export interface Workshop {
+  title: string;
+  organisation: string;
+  date: string;
+  desc: string;
+  images: string[];
 }
 
 export const USER_INFO = {
@@ -55,7 +62,6 @@ export const COCURRICULAR = [
   { role: "Assistant Head of Resident's Welfare Division", organisation: "Students' College Committee (MMU)", category: "Student Committee", date: "Jan 2024 – Dec 2024" }
 ];
 
-// 2. Use the 'Project' type defined above for the array
 export const PROJECTS: Project[] = [
   { 
     title: "Deepfake Detection Framework", 
@@ -84,6 +90,16 @@ export const PROJECTS: Project[] = [
     tags: ["Flask", "SQLAlchemy", "Python"], 
     image: "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1000",
     repo: "https://github.com/mahavaarshinie/Online-Tutor-Finding-System"
+  }
+];
+
+export const WORKSHOPS: Workshop[] = [
+  {
+    title: "Power BI Workshop: Knowledge Sharing",
+    organisation: "DATAi Community, Multimedia University",
+    date: "2026",
+    desc: "Conducted a hands-on session guiding students through data visualization best practices, DAX calculations, and interactive dashboard design.",
+    images: ["/workshop-1.jpg", "/workshop-2.jpg", "/workshop-3.jpg"]
   }
 ];
 
