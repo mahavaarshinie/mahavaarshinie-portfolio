@@ -93,7 +93,7 @@ export const PROJECTS: Project[] = [
   }
 ];
 
-export const WORKSHOPS: Workshop[] = [
+export const WORKSHOP: Workshop[] = [
   {
     title: "Power BI Workshop: Knowledge Sharing",
     organisation: "DATAi Community, Multimedia University",
