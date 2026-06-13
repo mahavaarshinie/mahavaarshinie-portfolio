@@ -123,18 +123,33 @@ export default function Portfolio() {
       <motion.section id="experience" {...fadeUp} className="py-40 px-6 border-b border-white/5">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-20">Professional Journey</p>
+          
           {EXPERIENCE.map((exp, i) => (
             <div key={i}>
               <motion.span {...fadeUp} className="text-gray-600 font-mono text-sm tracking-[0.3em] uppercase mb-6 block">{exp.date}</motion.span>
               <motion.h3 {...fadeUp} className="text-5xl md:text-[7rem] font-bold mb-4 leading-none tracking-tighter uppercase">{exp.role}</motion.h3>
               <motion.p {...fadeUp} className="text-xl text-gray-500 mb-14 italic uppercase">{exp.company}</motion.p>
-              <div className="flex flex-wrap justify-center gap-5 max-w-4xl mx-auto">
+              
+              {/* Task Pills */}
+              <div className="flex flex-wrap justify-center gap-5 max-w-4xl mx-auto mb-16">
                 {exp.tasks.map((task, idx) => (
                   <motion.span key={idx} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }} transition={{ delay: idx * 0.1 }}
                     className="bg-white/5 border border-white/10 px-7 py-3 rounded-full text-xs text-gray-400">{task}</motion.span>
                 ))}
               </div>
+
+              {/* Internship Images Gallery */}
+              <motion.div {...fadeUp} className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto mt-10">
+                {exp.images.map((img, idx) => (
+                  <img 
+                    key={idx} 
+                    src={img} 
+                    alt={`Internship ${idx + 1}`} 
+                    className="rounded-2xl w-full h-64 object-cover hover:scale-[1.02] transition-transform duration-300 border border-white/10" 
+                  />
+                ))}
+              </motion.div>
             </div>
           ))}
         </div>
