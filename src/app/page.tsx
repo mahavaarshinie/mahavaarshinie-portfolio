@@ -153,7 +153,7 @@ export default function Portfolio() {
       <motion.section id="workshop" {...fadeUp} className="py-28 px-10 border-t border-white/5">
         <div className="max-w-6xl mx-auto">
           <p className="text-center text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-20">Knowledge Sharing</p>
-          {WORKSHOPS.map((ws, i) => (
+          {WORKSHOP.map((ws, i) => (
             <div key={i} className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div className="grid grid-cols-2 gap-4">
                 {ws.images.map((img, idx) => (
