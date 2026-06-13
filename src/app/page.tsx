@@ -149,6 +149,27 @@ export default function Portfolio() {
         </div>
       </motion.section>
 
+      {/* KNOWLEDGE SHARING (WORKSHOPS) */}
+      <motion.section id="workshops" {...fadeUp} className="py-28 px-10 border-t border-white/5">
+        <div className="max-w-6xl mx-auto">
+          <p className="text-center text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-20">Knowledge Sharing</p>
+          {WORKSHOPS.map((ws, i) => (
+            <div key={i} className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <div className="grid grid-cols-2 gap-4">
+                {ws.images.map((img, idx) => (
+                  <img key={idx} src={img} alt={`Workshop ${idx + 1}`} className={`rounded-2xl object-cover ${idx === 0 ? "col-span-2 h-64" : "h-40"}`} />
+                ))}
+              </div>
+              <div>
+                <h3 className="text-3xl font-bold mb-4">{ws.title}</h3>
+                <p className="text-[#D4AF37] text-sm mb-6">{ws.organisation} • {ws.date}</p>
+                <p className="text-gray-400 leading-relaxed text-lg">{ws.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </motion.section>
+
       {/* PROJECTS */}
       <section id="projects" className="py-32 px-10 max-w-7xl mx-auto">
         <motion.p {...fadeUp} className="text-center text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-24">Intelligence Registry</motion.p>
