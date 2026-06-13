@@ -149,15 +149,21 @@ export default function Portfolio() {
         </div>
       </motion.section>
 
-      {/* KNOWLEDGE SHARING (WORKSHOP) */}
-      <motion.section id="workshop" {...fadeUp} className="py-28 px-10 border-t border-white/5">
+     {/* KNOWLEDGE SHARING / WORKSHOP SECTION */}
+      <motion.section id="workshops" {...fadeUp} className="py-28 px-10 border-t border-white/5">
         <div className="max-w-6xl mx-auto">
           <p className="text-center text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-20">Knowledge Sharing</p>
-          {WORKSHOP.map((ws, i) => (
-            <div key={i} className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              <div className="grid grid-cols-2 gap-4">
-                {ws.images.map((img, idx) => (
-                  <img key={idx} src={img} alt={`Workshop ${idx + 1}`} className={`rounded-2xl object-cover ${idx === 0 ? "col-span-2 h-64" : "h-40"}`} />
+          {WORKSHOP.map((ws: Workshop, i: number) => (
+            <div key={i} className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+              {/* Vertical alignment: 3 images stacked */}
+              <div className="flex flex-col gap-4">
+                {ws.images.map((img: string, idx: number) => (
+                  <img 
+                    key={idx} 
+                    src={img} 
+                    alt={`Workshop ${idx + 1}`} 
+                    className="rounded-2xl w-full h-80 object-cover" 
+                  />
                 ))}
               </div>
               <div>
