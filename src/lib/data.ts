@@ -52,7 +52,9 @@ export const EXPERIENCE = [
       "Built production-ready dashboards using Power BI (DAX & M code)",
       "Automated tasks and developed templates using Excel VBA",
       "Managed and queried SQL databases for data analysis and reporting"
-    ]
+    ],
+    // Images moved out of the tasks array
+    images: ["/intern-1.jpg", "/intern-2.jpg", "/intern-3.jpg"]
   }
 ];
 
