@@ -121,25 +121,29 @@ export default function Portfolio() {
 
       {/* PUBLICATION */}
       <motion.section {...fadeUp} className="py-28 px-10">
+        <div className="max-w-5xl mx-auto text-center mb-6">
+          <p className="text-[#D4AF37] uppercase tracking-widest text-[10px] font-bold">Selected Publication</p>
+        </div>
         <div className="max-w-5xl mx-auto p-14 bg-gradient-to-r from-[#D4AF37]/10 to-transparent border border-[#D4AF37]/20 rounded-[3rem]">
-          <p className="text-[#D4AF37] uppercase tracking-widest text-[10px] font-bold mb-6">Selected Publication</p>
           <h3 className="text-3xl font-bold mb-5 italic leading-tight">"{PUBLICATION.title}"</h3>
           <p className="text-gray-400 text-lg leading-relaxed">{PUBLICATION.details}</p>
         </div>
       </motion.section>
 
-       {/* KNOWLEDGE SHARING (WORKSHOP) - Matches Publication Container Style */}
-      <motion.section id="workshops" {...fadeUp} className="py-28 px-10">
+      {/* KNOWLEDGE SHARING (WORKSHOPS) */}
+      <motion.section id="workshops" {...fadeUp} className="py-28 px-10 border-t border-white/5">
+        <div className="max-w-5xl mx-auto text-center mb-10">
+          <p className="text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold">Knowledge Sharing</p>
+        </div>
+        
         <div className="max-w-5xl mx-auto p-14 bg-gradient-to-r from-[#D4AF37]/10 to-transparent border border-[#D4AF37]/20 rounded-[3rem]">
-          <p className="text-[#D4AF37] uppercase tracking-widest text-[10px] font-bold mb-10">Knowledge Sharing</p>
-          
           {WORKSHOP.map((ws: Workshop, i: number) => (
-            <div key={i} className="flex flex-col gap-10">
-              {/* Text Content */}
+            <div key={i} className="flex flex-col gap-10 text-center">
+              {/* Text Content - Center Aligned */}
               <div>
                 <h3 className="text-3xl font-bold mb-2">{ws.title}</h3>
                 <p className="text-[#D4AF37] text-sm mb-6">{ws.organisation} • {ws.date}</p>
-                <p className="text-gray-400 leading-relaxed text-lg">{ws.desc}</p>
+                <p className="text-gray-400 leading-relaxed text-lg max-w-2xl mx-auto">{ws.desc}</p>
               </div>
 
               {/* Images Row */}
