@@ -125,7 +125,8 @@ export const WORKSHOP: Workshop[] = [
 
 export const PUBLICATION = {
   title: "Deepfake Detection Using Machine Learning Models",
-  details: "Proceedings of the Digital Futures International Congress (DIFCON), AIP Conference Proceedings, 2026."
+  details: "Proceedings of the Digital Futures International Congress (DIFCON), AIP Conference Proceedings, 2026.",
+  certPdf: "/difcon.pdf" // Add this line
 };
 
 export const CERTIFICATIONS = [
