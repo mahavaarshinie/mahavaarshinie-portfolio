@@ -281,18 +281,22 @@ export default function Portfolio() {
               ))}
             </div>
           </div>
+          
           <motion.div whileHover={{ scale: 1.01 }}
             className="bg-gradient-to-br from-[#111] to-black p-16 rounded-[3rem] border border-white/5 flex flex-col justify-center">
             <p className="text-[#D4AF37] uppercase tracking-widest text-[10px] mb-8 font-bold">Hackathon Presence</p>
             <h3 className="text-5xl font-bold mb-8 italic tracking-tighter">2x International Participant</h3>
-            <p className="text-gray-500 leading-relaxed text-xl">Rapid prototyping and predictive analytics applied to global challenges under intense timelines.</p>
+            <p className="text-gray-500 leading-relaxed text-xl mb-10">Rapid prototyping and predictive analytics applied to global challenges under intense timelines.</p>
+            
+            {/* Certificate Links */}
+            <div className="flex flex-col gap-4">
+              {HACKATHONS.map((h, i) => (
+                <a key={i} href={h.certPath} target="_blank" rel="noopener noreferrer" 
+                   className="text-[#D4AF37] border border-[#D4AF37]/30 px-6 py-3 rounded-xl text-sm font-bold uppercase tracking-widest hover:bg-[#D4AF37]/10 transition-all text-center">
+                  View {h.title} Certificate
+                </a>
+              ))}
+            </div>
           </motion.div>
         </div>
       </motion.section>
-
-      <footer className="py-20 text-center text-gray-800 text-[11px] tracking-[1.5em] uppercase border-t border-white/5">
-        MAHA VAARSHINIE RAJOO • 2026
-      </footer>
-    </main>
-  );
-}
