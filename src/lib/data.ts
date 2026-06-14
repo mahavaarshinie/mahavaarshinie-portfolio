@@ -132,7 +132,7 @@ export const PUBLICATION = {
 // Add this to src/lib/data.ts
 export const HACKATHONS = [
   { title: "UMHackathon 2026", certPath: "/umhack.jpg" },
-  { title: "Varsity Hackathon", certPath: "/vhack.pdf" }
+  { title: "Varsity Hackathon 2026", certPath: "/vhack.pdf" }
 ];
 
 export const CERTIFICATIONS = [
