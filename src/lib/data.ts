@@ -129,6 +129,12 @@ export const PUBLICATION = {
   certPdf: "/difcon.pdf" // Add this line
 };
 
+// Add this to src/lib/data.ts
+export const HACKATHONS = [
+  { title: "UMHackathon 2026", certPath: "/umhack.jpg" },
+  { title: "Varsity Hackathon", certPath: "/vhack.pdf" }
+];
+
 export const CERTIFICATIONS = [
   "Microsoft Power BI Data Analyst Associate",
   "AWS Educate Machine Learning Foundations",
