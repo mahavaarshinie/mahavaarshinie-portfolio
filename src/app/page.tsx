@@ -300,3 +300,10 @@ export default function Portfolio() {
           </motion.div>
         </div>
       </motion.section>
+      {/* Footer */}
+      <footer className="py-20 text-center text-gray-800 text-[11px] tracking-[1.5em] uppercase border-t border-white/5">
+        MAHA VAARSHINIE RAJOO • 2026
+      </footer>
+    </main> // <--- THIS IS REQUIRED
+  );
+}
