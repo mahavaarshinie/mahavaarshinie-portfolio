@@ -162,7 +162,18 @@ export default function Portfolio() {
         </div>
         <div className="max-w-5xl mx-auto p-14 bg-gradient-to-r from-[#D4AF37]/10 to-transparent border border-[#D4AF37]/20 rounded-[3rem]">
           <h3 className="text-3xl font-bold mb-5 italic leading-tight">"{PUBLICATION.title}"</h3>
-          <p className="text-gray-400 text-lg leading-relaxed">{PUBLICATION.details}</p>
+          <p className="text-gray-400 text-lg leading-relaxed mb-8">{PUBLICATION.details}</p>
+          
+          {/* Certificate Link */}
+          <a 
+            href={PUBLICATION.certPdf} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-[#D4AF37] font-bold text-sm tracking-widest uppercase border-b border-[#D4AF37] pb-1 hover:text-white transition-colors"
+          >
+            <span>View Presentation Certificate</span>
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+          </a>
         </div>
       </motion.section>
 
