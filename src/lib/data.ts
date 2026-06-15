@@ -104,13 +104,13 @@ export const PROJECTS: Project[] = [
     image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1000",
     repo: "https://github.com/mahavaarshinie/The-Inclusive-Citizen-Multilingual-AI-for-Public-Services"
   },
-  { 
-    title: "Online Tutor Booking System", 
-    desc: "Flask and SQLAlchemy prototype featuring real-time filtering and automated scheduling.", 
-    tags: ["Flask", "SQLAlchemy", "Python"], 
-    image: "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1000",
-    repo: "https://github.com/mahavaarshinie/Online-Tutor-Finding-System"
-  }
+  {
+    title: "ANY-OBJECT ANY-TIME VISION APP",
+    desc: "An enterprise-grade, standalone industrial quality control pipeline using an Unsupervised Distribution Alignment framework. It learns completely from flawless samples, extracting 512-channel spatial feature activations via an ONNX Wide-ResNet50 model to automatically flag microchip, component, or surface defects on the fly from just 2-3 reference images.",
+    image: "/projects/industrial-vision-thumbnail.jpg", // Replace with your portfolio image asset path
+    tags: ["Next.js 14", "TypeScript", "ONNX Runtime", "Computer Vision", "Tailwind CSS"],
+    repo: "https://github.com/mahavaarshinie/ANY-OBJECT-ANY-TIME-VISION-APP"
+  },
 ];
 
 export const WORKSHOP: Workshop[] = [
