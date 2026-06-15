@@ -108,7 +108,7 @@ export const PROJECTS: Project[] = [
     title: "ANY-OBJECT ANY-TIME VISION APP",
     desc: "Industrial defect detection pipeline via on-the-fly deep spatial feature tracking.",
     // Corrected image path assumed to be in your public directory
-    image: "/projects/industrial-vision-thumbnail.jpg",
+    image: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1000",
     tags: ["Next.js 14", "TypeScript", "ONNX Runtime", "Computer Vision", "Tailwind CSS"],
     repo: "https://github.com/mahavaarshinie/ANY-OBJECT-ANY-TIME-VISION-APP"
   },
