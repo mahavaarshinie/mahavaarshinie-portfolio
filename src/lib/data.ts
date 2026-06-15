@@ -106,7 +106,7 @@ export const PROJECTS: Project[] = [
   },
   {
     title: "ANY-OBJECT ANY-TIME VISION APP",
-    desc: "An enterprise-grade, standalone industrial quality control pipeline using an Unsupervised Distribution Alignment framework. It learns completely from flawless samples, extracting 512-channel spatial feature activations via an ONNX Wide-ResNet50 model to automatically flag microchip, component, or surface defects on the fly from just 2-3 reference images.",
+    desc: "An industrial defect detection pipeline using Next.js and ONNX Runtime to isolate structural component anomalies on the fly via deep spatial feature tracking.",
     image: "/projects/industrial-vision-thumbnail.jpg", // Replace with your portfolio image asset path
     tags: ["Next.js 14", "TypeScript", "ONNX Runtime", "Computer Vision", "Tailwind CSS"],
     repo: "https://github.com/mahavaarshinie/ANY-OBJECT-ANY-TIME-VISION-APP"
