@@ -88,7 +88,7 @@ export const PROJECTS: Project[] = [
     desc: "Achieved 98.05% accuracy using Dual-Stream Hybrid CNN with RNN, LSTM, and Transformers.", 
     tags: ["Computer Vision", "AI", "98.05% Accuracy"], 
     image: "https://images.unsplash.com/photo-1633412802994-5c058f151b66?q=80&w=1000",
-    repo: "" 
+    repo: "https://github.com/mahavaarshinie/Deepfake-Detection" 
   },
   { 
     title: "SmartStock AI", 
