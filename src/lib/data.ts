@@ -28,26 +28,46 @@ export interface Achievement {
   stat?: { value: string; label: string };
 }
 
+export interface Skill {
+  name: string;
+  logo?: string;
+  glyph?: string;
+}
+
 export const USER_INFO = {
   name: "MAHA VAARSHINIE ARUPATHA RAJOO",
   title: "Data Scientist",
-  about: "Data Science student at Multimedia University (MMU) specializing in end-to-end machine learning and predictive analytics. Developed a computer vision system for deepfake detection and dialect-aware NLP solutions for inclusive digital access. Experienced in full-stack web development, building production-ready MNC dashboards and robust backend systems with API integration. Proficient in front-end programming and advanced database management to transform complex data into actionable business intelligence.",
+  about: "Data Scientist, AI Engineer and final-year Data Science student at Multimedia University (MMU), specializing in end-to-end machine learning, deep learning, and predictive analytics. Built an award-winning deepfake detection system achieving 98.05% accuracy with a Dual-Stream Hybrid CNN — published at DIFCON and awarded a Silver Medal at iNVENTX 2026 — alongside dialect-aware NLP solutions for inclusive digital access across ASEAN languages. Experienced in building agentic AI systems with MCP and LLM integrations, automating workflows with n8n, and full-stack development of production-ready MNC dashboards and robust backend systems with API integration. Proficient in advanced database management, data visualization, and transforming complex data into actionable business intelligence that drives real-world impact.",
   email: "mahavaarshinie17@gmail.com",
+  // TODO: replace with the real WhatsApp number in international format, digits only (e.g. 60123456789)
+  whatsapp: "60123456789",
   linkedin: "https://www.linkedin.com/in/maha-vaarshinie-arupatha-rajoo-068205238/",
   github: "https://github.com/mahavaarshinie"
 };
 
-export const SKILLS = [
+export const SKILLS: Skill[] = [
   { name: "Python", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" },
-  { name: "FastAPI", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg" },
-  { name: "React", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" },
-  { name: "SQL", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" },
-  { name: "Power BI", logo: "https://cdn.jsdelivr.net/gh/microsoft/PowerBI-Icons@main/SVG/Power-BI.svg"},
   { name: "TensorFlow", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg" },
   { name: "PyTorch", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pytorch/pytorch-original.svg" },
+  { name: "Agentic AI", glyph: "✦" },
+  { name: "MCP", logo: "https://cdn.simpleicons.org/modelcontextprotocol/white", glyph: "⌘" },
+  { name: "Computer Vision", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/opencv/opencv-original.svg" },
+  { name: "NLP", glyph: "文A" },
+  { name: "LangChain", logo: "https://cdn.simpleicons.org/langchain/white", glyph: "◇" },
+  { name: "Hugging Face", logo: "https://cdn.simpleicons.org/huggingface", glyph: "🤗" },
+  { name: "Scikit-learn", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/scikitlearn/scikitlearn-original.svg" },
+  { name: "Pandas", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pandas/pandas-original.svg" },
+  { name: "n8n", logo: "https://cdn.simpleicons.org/n8n", glyph: "⛓" },
+  { name: "D3.js", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/d3js/d3js-original.svg" },
+  { name: "FastAPI", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg" },
   { name: "Flask", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg" },
+  { name: "React", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" },
+  { name: "SQL", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" },
+  { name: "Power BI", logo: "https://cdn.jsdelivr.net/gh/microsoft/PowerBI-Icons@main/SVG/Power-BI.svg" },
+  { name: "Tableau", logo: "https://cdn.simpleicons.org/tableau", glyph: "▦" },
   { name: "Docker", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" },
   { name: "Azure", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg" },
+  { name: "Git", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" },
 ];
 
 export const EDUCATION = [
@@ -71,48 +91,48 @@ export const EXPERIENCE = [
 ];
 
 export const COCURRICULAR = [
-  { 
-    role: "Flood Cleanup Volunteer", 
-    organisation: "MMU Superheroes", 
-    category: "Social Services", 
+  {
+    role: "Flood Cleanup Volunteer",
+    organisation: "MMU Superheroes",
+    category: "Social Services",
     date: null,
-    images: ["/scc-3.jpg"] 
+    images: ["/scc-3.jpg"]
   },
-  { 
-    role: "Member of Business Operation Division", 
-    organisation: "Students' College Committee (MMU)", 
-    category: "Student Committee", 
+  {
+    role: "Member of Business Operation Division",
+    organisation: "Students' College Committee (MMU)",
+    category: "Student Committee",
     date: "Jul 2023 – Dec 2023",
-    images: ["/scc-2.jpg"] 
+    images: ["/scc-2.jpg"]
   },
-  { 
-    role: "Assistant Head of Resident's Welfare Division", 
-    organisation: "Students' College Committee (MMU)", 
-    category: "Student Committee", 
+  {
+    role: "Assistant Head of Resident's Welfare Division",
+    organisation: "Students' College Committee (MMU)",
+    category: "Student Committee",
     date: "Jan 2024 – Dec 2024",
-    images: ["/scc-1.jpg"] 
+    images: ["/scc-1.jpg"]
   }
 ];
 
 export const PROJECTS: Project[] = [
-  { 
-    title: "Deepfake Detection Framework", 
-    desc: "Achieved 98.05% accuracy using Dual-Stream Hybrid CNN with RNN, LSTM, and Transformers.", 
-    tags: ["Computer Vision", "AI", "98.05% Accuracy"], 
+  {
+    title: "Deepfake Detection Framework",
+    desc: "Achieved 98.05% accuracy using Dual-Stream Hybrid CNN with RNN, LSTM, and Transformers.",
+    tags: ["Computer Vision", "AI", "98.05% Accuracy"],
     image: "https://images.unsplash.com/photo-1633412802994-5c058f151b66?q=80&w=1000",
-    repo: "https://github.com/mahavaarshinie/Deepfake-Detection" 
+    repo: "https://github.com/mahavaarshinie/Deepfake-Detection"
   },
-  { 
-    title: "SmartStock AI", 
-    desc: "Decision support system for SME inventory optimization using AI-driven demand forecasting.", 
-    tags: ["FastAPI", "React.js", "Forecasting"], 
+  {
+    title: "SmartStock AI",
+    desc: "Decision support system for SME inventory optimization using AI-driven demand forecasting.",
+    tags: ["FastAPI", "React.js", "Forecasting"],
     image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1000",
     repo: "https://github.com/mahavaarshinie/SmartStock-AI"
   },
-  { 
-    title: "The Inclusive Citizen", 
-    desc: "Multilingual NLP app for ASEAN dialects using the SEA-LION dataset and FastAPI.", 
-    tags: ["NLP", "SEA-LION", "FastAPI"], 
+  {
+    title: "The Inclusive Citizen",
+    desc: "Multilingual NLP app for ASEAN dialects using the SEA-LION dataset and FastAPI.",
+    tags: ["NLP", "SEA-LION", "FastAPI"],
     image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1000",
     repo: "https://github.com/mahavaarshinie/The-Inclusive-Citizen-Multilingual-AI-for-Public-Services"
   },
