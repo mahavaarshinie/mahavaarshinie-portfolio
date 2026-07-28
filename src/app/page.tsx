@@ -34,22 +34,25 @@ function ContactIcon({ type, className = "w-5 h-5" }: { type: string; className?
 /**
  * Card-stack scrolling: each section is sticky so it pins in place once fully
  * scrolled, and the next section slides in over it while the pinned one
- * shrinks and dims underneath — like cards being stacked on a deck.
+ * shrinks, slides up and dims underneath — like cards being stacked on a deck.
  * Sections taller than the viewport pin at `top: viewport - height` so all
  * their content stays reachable.
  */
 function StackSection({ id, z, className = "", bare = false, children }: { id?: string; z: number; className?: string; bare?: boolean; children: ReactNode }) {
   const ref = useRef<HTMLElement>(null);
   const [top, setTop] = useState(0);
-  // scrollY window during which the next section slides over this one
-  const [range, setRange] = useState<[number, number]>([0, 1]);
+  // scrollY window during which the next section slides over this one.
+  // The middle stop front-loads the animation: most of the shrink happens in
+  // the first 35% of the transition, while the covered card still fills most
+  // of the screen — otherwise the effect only reads when scrolling back up.
+  const [range, setRange] = useState<[number, number, number]>([0, 0.5, 1]);
 
   const { scrollY } = useScroll();
-  // The covered card visibly recedes: slides up with parallax, shrinks and dims
-  // while the next card passes over it — readable in both scroll directions.
-  const scale = useTransform(scrollY, range, [1, 0.86]);
-  const y = useTransform(scrollY, range, [0, -120]);
-  const brightness = useTransform(scrollY, range, [1, 0.3]);
+  const rawScale = useTransform(scrollY, range, [1, 0.9, 0.88]);
+  const rawY = useTransform(scrollY, range, [0, -100, -140]);
+  const scale = useSpring(rawScale, { stiffness: 300, damping: 40 });
+  const y = useSpring(rawY, { stiffness: 300, damping: 40 });
+  const brightness = useTransform(scrollY, range, [1, 0.45, 0.35]);
   const filter = useMotionTemplate`brightness(${brightness})`;
 
   useEffect(() => {
@@ -61,7 +64,7 @@ function StackSection({ id, z, className = "", bare = false, children }: { id?: 
       setTop(Math.min(0, vh - h));
       const start = el.offsetTop + Math.max(h - vh, 0);
       const end = el.offsetTop + h;
-      setRange(end > start ? [start, end] : [start, start + 1]);
+      setRange(end > start ? [start, start + (end - start) * 0.35, end] : [start, start + 0.5, start + 1]);
     };
     update();
     const ro = new ResizeObserver(update);
@@ -101,7 +104,7 @@ export default function Portfolio() {
             className="text-xl font-bold tracking-tighter">Maha Vaarshinie</motion.span>
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
             className="hidden md:flex items-center gap-10 text-sm font-medium text-gray-400">
-            {["about", "education", "experience", "achievements", "projects", "activities"].map(s => (
+            {["about", "experience", "projects", "achievements", "education", "activities"].map(s => (
               <a key={s} href={`#${s}`} className="hover:text-white transition-colors capitalize">{s}</a>
             ))}
 
@@ -192,33 +195,8 @@ export default function Portfolio() {
         </div>
       </StackSection>
 
-      {/* EDUCATION */}
-      <StackSection id="education" z={4} className="py-32 px-10">
-        <div className="max-w-6xl mx-auto">
-          <p className="text-center text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-20">Academic Background</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {EDUCATION.map((edu, i) => (
-              <motion.div key={i} {...stagger(i)}
-                className="relative bg-white/[0.02] border border-white/10 rounded-[2.5rem] p-12 hover:border-[#D4AF37]/30 transition-all group overflow-hidden">
-                <div className="absolute top-0 right-0 w-28 h-28 bg-[#D4AF37]/5 rounded-bl-[2.5rem] group-hover:bg-[#D4AF37]/10 transition-all" />
-                <span className="text-[#D4AF37] font-mono text-[10px] tracking-[0.3em] uppercase mb-5 block">{edu.date}</span>
-                <h3 className="text-xl font-bold mb-2 group-hover:text-[#D4AF37] transition-colors">{edu.degree}</h3>
-                <p className="text-gray-500 italic mb-8">{edu.institution}</p>
-                <div className="flex items-end justify-between">
-                  <div>
-                    <p className="text-[10px] uppercase tracking-widest text-gray-600 mb-1">CGPA</p>
-                    <p className="text-5xl font-black text-white/80">{edu.cgpa}</p>
-                  </div>
-                  <p className="text-gray-600 text-xs tracking-widest uppercase">{edu.location}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </StackSection>
-
       {/* EXPERIENCE */}
-      <StackSection id="experience" z={5} className="py-40 px-6">
+      <StackSection id="experience" z={4} className="py-40 px-6">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-20">Professional Journey</p>
 
@@ -253,30 +231,49 @@ export default function Portfolio() {
         </div>
       </StackSection>
 
-      {/* PUBLICATION */}
-      <StackSection z={6} className="py-28 px-10">
-        <div className="max-w-5xl mx-auto text-center mb-6">
-          <p className="text-[#D4AF37] uppercase tracking-widest text-[10px] font-bold">Selected Publication</p>
-        </div>
-        <div className="max-w-5xl mx-auto p-14 bg-gradient-to-r from-[#D4AF37]/10 to-transparent border border-[#D4AF37]/20 rounded-[3rem]">
-          <h3 className="text-3xl font-bold mb-5 italic leading-tight">"{PUBLICATION.title}"</h3>
-          <p className="text-gray-400 text-lg leading-relaxed mb-8">{PUBLICATION.details}</p>
+      {/* PROJECTS */}
+      <StackSection id="projects" z={5} className="py-32 px-10">
+        <div className="max-w-7xl mx-auto">
+          <motion.p {...fadeUp} className="text-center text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-24">Intelligence Registry</motion.p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
+            {PROJECTS.map((project: Project, i: number) => (
+              <motion.div key={i} {...stagger(i)} whileHover={{ y: -8 }} transition={{ duration: 0.3 }}
+                className="group bg-white/[0.02] border border-white/10 rounded-[3rem] overflow-hidden hover:border-[#D4AF37]/30 transition-all">
+                <div className="h-[380px] overflow-hidden">
+                  <img src={project.image} alt={project.title} className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000" />
+                </div>
+                <div className="p-12">
+                  <h4 className="text-3xl font-bold mb-4 group-hover:text-[#D4AF37] transition-colors uppercase">{project.title}</h4>
+                  <p className="text-gray-500 leading-relaxed mb-8">{project.desc}</p>
+                  <div className="flex flex-wrap gap-3 mb-8">
+                    {project.tags.map(tag => (
+                      <span key={tag} className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#D4AF37] bg-[#D4AF37]/5 px-5 py-2 rounded-xl border border-[#D4AF37]/10">{tag}</span>
+                    ))}
+                  </div>
+                  {/* Repo Link - only shows if it exists in data.ts */}
+                  {project.repo && project.repo.length > 0 && (
+                    <a href={project.repo} target="_blank" rel="noopener noreferrer" className="text-sm font-bold text-white border-b border-[#D4AF37] pb-1 hover:text-[#D4AF37] transition-colors">
+                      VIEW REPOSITORY
+                    </a>
+                  )}
+                </div>
+              </motion.div>
+            ))}
+          </div>
 
-          {/* Certificate Link */}
-          <a
-            href={PUBLICATION.certPdf}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-[#D4AF37] font-bold text-sm tracking-widest uppercase border-b border-[#D4AF37] pb-1 hover:text-white transition-colors"
-          >
-            <span>View Presentation Certificate</span>
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
-          </a>
+          {/* View All Projects */}
+          <motion.div {...fadeUp} className="text-center mt-24">
+            <a href={USER_INFO.github} target="_blank" rel="noopener noreferrer"
+              className="inline-flex items-center gap-3 border border-[#D4AF37]/40 hover:bg-[#D4AF37]/10 px-10 py-4 rounded-full text-sm font-bold tracking-[0.2em] uppercase text-[#D4AF37] transition-all hover:scale-105">
+              <span>View All Projects on GitHub</span>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+            </a>
+          </motion.div>
         </div>
       </StackSection>
 
       {/* ACHIEVEMENTS */}
-      <StackSection id="achievements" z={7} className="py-32 px-10">
+      <StackSection id="achievements" z={6} className="py-32 px-10">
         <div className="max-w-6xl mx-auto">
           <p className="text-center text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-20">Awards & Achievements</p>
           <div className="flex flex-col gap-10">
@@ -318,8 +315,55 @@ export default function Portfolio() {
         </div>
       </StackSection>
 
+      {/* PUBLICATION */}
+      <StackSection z={7} className="py-28 px-10">
+        <div className="max-w-5xl mx-auto text-center mb-6">
+          <p className="text-[#D4AF37] uppercase tracking-widest text-[10px] font-bold">Selected Publication</p>
+        </div>
+        <div className="max-w-5xl mx-auto p-14 bg-gradient-to-r from-[#D4AF37]/10 to-transparent border border-[#D4AF37]/20 rounded-[3rem]">
+          <h3 className="text-3xl font-bold mb-5 italic leading-tight">"{PUBLICATION.title}"</h3>
+          <p className="text-gray-400 text-lg leading-relaxed mb-8">{PUBLICATION.details}</p>
+
+          {/* Certificate Link */}
+          <a
+            href={PUBLICATION.certPdf}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-[#D4AF37] font-bold text-sm tracking-widest uppercase border-b border-[#D4AF37] pb-1 hover:text-white transition-colors"
+          >
+            <span>View Presentation Certificate</span>
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+          </a>
+        </div>
+      </StackSection>
+
+      {/* EDUCATION */}
+      <StackSection id="education" z={8} className="py-32 px-10">
+        <div className="max-w-6xl mx-auto">
+          <p className="text-center text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-20">Academic Background</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {EDUCATION.map((edu, i) => (
+              <motion.div key={i} {...stagger(i)}
+                className="relative bg-white/[0.02] border border-white/10 rounded-[2.5rem] p-12 hover:border-[#D4AF37]/30 transition-all group overflow-hidden">
+                <div className="absolute top-0 right-0 w-28 h-28 bg-[#D4AF37]/5 rounded-bl-[2.5rem] group-hover:bg-[#D4AF37]/10 transition-all" />
+                <span className="text-[#D4AF37] font-mono text-[10px] tracking-[0.3em] uppercase mb-5 block">{edu.date}</span>
+                <h3 className="text-xl font-bold mb-2 group-hover:text-[#D4AF37] transition-colors">{edu.degree}</h3>
+                <p className="text-gray-500 italic mb-8">{edu.institution}</p>
+                <div className="flex items-end justify-between">
+                  <div>
+                    <p className="text-[10px] uppercase tracking-widest text-gray-600 mb-1">CGPA</p>
+                    <p className="text-5xl font-black text-white/80">{edu.cgpa}</p>
+                  </div>
+                  <p className="text-gray-600 text-xs tracking-widest uppercase">{edu.location}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </StackSection>
+
       {/* KNOWLEDGE SHARING (WORKSHOPS) */}
-      <StackSection id="workshops" z={8} className="py-28 px-10">
+      <StackSection id="workshops" z={9} className="py-28 px-10">
         <div className="max-w-5xl mx-auto text-center mb-10">
           <p className="text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold">Knowledge Sharing</p>
         </div>
@@ -347,47 +391,6 @@ export default function Portfolio() {
               </div>
             </div>
           ))}
-        </div>
-      </StackSection>
-
-      {/* PROJECTS */}
-      <StackSection id="projects" z={9} className="py-32 px-10">
-        <div className="max-w-7xl mx-auto">
-          <motion.p {...fadeUp} className="text-center text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-24">Intelligence Registry</motion.p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
-            {PROJECTS.map((project: Project, i: number) => (
-              <motion.div key={i} {...stagger(i)} whileHover={{ y: -8 }} transition={{ duration: 0.3 }}
-                className="group bg-white/[0.02] border border-white/10 rounded-[3rem] overflow-hidden hover:border-[#D4AF37]/30 transition-all">
-                <div className="h-[380px] overflow-hidden">
-                  <img src={project.image} alt={project.title} className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000" />
-                </div>
-                <div className="p-12">
-                  <h4 className="text-3xl font-bold mb-4 group-hover:text-[#D4AF37] transition-colors uppercase">{project.title}</h4>
-                  <p className="text-gray-500 leading-relaxed mb-8">{project.desc}</p>
-                  <div className="flex flex-wrap gap-3 mb-8">
-                    {project.tags.map(tag => (
-                      <span key={tag} className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#D4AF37] bg-[#D4AF37]/5 px-5 py-2 rounded-xl border border-[#D4AF37]/10">{tag}</span>
-                    ))}
-                  </div>
-                  {/* Repo Link - only shows if it exists in data.ts */}
-                  {project.repo && project.repo.length > 0 && (
-                    <a href={project.repo} target="_blank" rel="noopener noreferrer" className="text-sm font-bold text-white border-b border-[#D4AF37] pb-1 hover:text-[#D4AF37] transition-colors">
-                      VIEW REPOSITORY
-                    </a>
-                  )}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* View All Projects */}
-          <motion.div {...fadeUp} className="text-center mt-24">
-            <a href={USER_INFO.github} target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 border border-[#D4AF37]/40 hover:bg-[#D4AF37]/10 px-10 py-4 rounded-full text-sm font-bold tracking-[0.2em] uppercase text-[#D4AF37] transition-all hover:scale-105">
-              <span>View All Projects on GitHub</span>
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-            </a>
-          </motion.div>
         </div>
       </StackSection>
 
@@ -453,8 +456,7 @@ export default function Portfolio() {
       </StackSection>
 
       {/* HIRE ME */}
-      <StackSection id="hire" z={12} className="py-40 px-10 min-h-screen flex items-center"
-      >
+      <StackSection id="hire" z={12} className="py-40 px-10 min-h-screen flex items-center">
         <div className="max-w-5xl mx-auto text-center w-full">
           <p className="text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-10">Open To Opportunities</p>
           <h2 className="text-6xl md:text-[8rem] font-black tracking-tighter leading-none mb-10 bg-gradient-to-b from-white via-white/90 to-gray-600 bg-clip-text text-transparent">
