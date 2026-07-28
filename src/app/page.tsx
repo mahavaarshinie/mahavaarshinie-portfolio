@@ -1,5 +1,5 @@
 "use client";
-import { motion, useScroll, useTransform, useMotionTemplate } from "framer-motion";
+import { motion, useScroll, useTransform, useMotionTemplate, useSpring } from "framer-motion";
 import { useEffect, useRef, useState, ReactNode } from "react";
 import { USER_INFO, PROJECTS, EXPERIENCE, SKILLS, CERTIFICATIONS, PUBLICATION, EDUCATION, COCURRICULAR, WORKSHOP, Project, Workshop, Skill, HACKATHONS, ACHIEVEMENTS, Achievement } from "../lib/data";
 
@@ -41,15 +41,18 @@ function ContactIcon({ type, className = "w-5 h-5" }: { type: string; className?
 function StackSection({ id, z, className = "", bare = false, children }: { id?: string; z: number; className?: string; bare?: boolean; children: ReactNode }) {
   const ref = useRef<HTMLElement>(null);
   const [top, setTop] = useState(0);
-  // scrollY window during which the next section slides over this one
-  const [range, setRange] = useState<[number, number]>([0, 1]);
+  // scrollY window during which the next section slides over this one.
+  // The middle stop front-loads the animation: most of the shrink happens in
+  // the first 35% of the transition, while the covered card still fills most
+  // of the screen — otherwise the effect only reads when scrolling back up.
+  const [range, setRange] = useState<[number, number, number]>([0, 0.5, 1]);
 
   const { scrollY } = useScroll();
-  // The covered card visibly recedes: slides up with parallax, shrinks and dims
-  // while the next card passes over it — readable in both scroll directions.
-  const scale = useTransform(scrollY, range, [1, 0.86]);
-  const y = useTransform(scrollY, range, [0, -120]);
-  const brightness = useTransform(scrollY, range, [1, 0.3]);
+  const rawScale = useTransform(scrollY, range, [1, 0.9, 0.88]);
+  const rawY = useTransform(scrollY, range, [0, -100, -140]);
+  const scale = useSpring(rawScale, { stiffness: 300, damping: 40 });
+  const y = useSpring(rawY, { stiffness: 300, damping: 40 });
+  const brightness = useTransform(scrollY, range, [1, 0.45, 0.35]);
   const filter = useMotionTemplate`brightness(${brightness})`;
 
   useEffect(() => {
@@ -61,7 +64,7 @@ function StackSection({ id, z, className = "", bare = false, children }: { id?: 
       setTop(Math.min(0, vh - h));
       const start = el.offsetTop + Math.max(h - vh, 0);
       const end = el.offsetTop + h;
-      setRange(end > start ? [start, end] : [start, start + 1]);
+      setRange(end > start ? [start, start + (end - start) * 0.35, end] : [start, start + 0.5, start + 1]);
     };
     update();
     const ro = new ResizeObserver(update);
