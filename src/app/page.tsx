@@ -1,5 +1,5 @@
 "use client";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform, useMotionTemplate } from "framer-motion";
 import { useEffect, useRef, useState, ReactNode } from "react";
 import { USER_INFO, PROJECTS, EXPERIENCE, SKILLS, CERTIFICATIONS, PUBLICATION, EDUCATION, COCURRICULAR, WORKSHOP, Project, Workshop, Skill, HACKATHONS, ACHIEVEMENTS, Achievement } from "../lib/data";
 
@@ -7,36 +7,73 @@ const fadeUp = { initial: { opacity: 0, y: 40 }, whileInView: { opacity: 1, y: 0
 const stagger = (i: number) => ({ ...fadeUp, transition: { duration: 0.6, delay: i * 0.1 } });
 
 const CONTACTS = [
-  { label: "WhatsApp", value: "Chat instantly", href: `https://wa.me/${USER_INFO.whatsapp}`, icon: "💬" },
-  { label: "Email", value: USER_INFO.email, href: `mailto:${USER_INFO.email}`, icon: "✉️" },
-  { label: "LinkedIn", value: "Let's connect", href: USER_INFO.linkedin, icon: "💼" },
+  { label: "WhatsApp", value: "Chat instantly", href: `https://wa.me/${USER_INFO.whatsapp}`, type: "whatsapp" },
+  { label: "Email", value: USER_INFO.email, href: `mailto:${USER_INFO.email}`, type: "email" },
+  { label: "LinkedIn", value: "Let's connect", href: USER_INFO.linkedin, type: "linkedin" },
 ];
+
+// Thin-stroke gold line icons to match the site's existing SVG style
+function ContactIcon({ type, className = "w-5 h-5" }: { type: string; className?: string }) {
+  if (type === "whatsapp") return (
+    <svg className={className} fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M8.5 10.5h.01M12 10.5h.01M15.5 10.5h.01M21 12c0 4.418-4.03 8-9 8a9.9 9.9 0 01-4.26-.95L3 20l1.4-3.72A7.4 7.4 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+    </svg>
+  );
+  if (type === "email") return (
+    <svg className={className} fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+    </svg>
+  );
+  return (
+    <svg className={className} fill="currentColor" viewBox="0 0 24 24">
+      <path d="M19 3a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14m-.5 15.5v-5.3a3.26 3.26 0 00-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 011.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 001.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 00-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z" />
+    </svg>
+  );
+}
 
 /**
  * Card-stack scrolling: each section is sticky so it pins in place once fully
- * scrolled, and the next section slides in over it. Sections taller than the
- * viewport pin at `top: viewport - height` so all their content stays reachable.
+ * scrolled, and the next section slides in over it while the pinned one
+ * shrinks and dims underneath — like cards being stacked on a deck.
+ * Sections taller than the viewport pin at `top: viewport - height` so all
+ * their content stays reachable.
  */
-function StackSection({ id, z, className = "", children }: { id?: string; z: number; className?: string; children: ReactNode }) {
+function StackSection({ id, z, className = "", bare = false, children }: { id?: string; z: number; className?: string; bare?: boolean; children: ReactNode }) {
   const ref = useRef<HTMLElement>(null);
   const [top, setTop] = useState(0);
+  // scrollY window during which the next section slides over this one
+  const [range, setRange] = useState<[number, number]>([0, 1]);
+
+  const { scrollY } = useScroll();
+  const scale = useTransform(scrollY, range, [1, 0.94]);
+  const brightness = useTransform(scrollY, range, [1, 0.5]);
+  const filter = useMotionTemplate`brightness(${brightness})`;
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const update = () => setTop(Math.min(0, window.innerHeight - el.offsetHeight));
+    const update = () => {
+      const vh = window.innerHeight;
+      const h = el.offsetHeight;
+      setTop(Math.min(0, vh - h));
+      const start = el.offsetTop + Math.max(h - vh, 0);
+      const end = el.offsetTop + h;
+      setRange(end > start ? [start, end] : [start, start + 1]);
+    };
     update();
     const ro = new ResizeObserver(update);
     ro.observe(el);
+    ro.observe(document.body);
     window.addEventListener("resize", update);
     return () => { ro.disconnect(); window.removeEventListener("resize", update); };
   }, []);
 
   return (
-    <section ref={ref} id={id} style={{ position: "sticky", top, zIndex: z }}
-      className={`bg-[#0a0a0a] border-t border-white/10 rounded-t-[3rem] shadow-[0_-30px_80px_rgba(0,0,0,0.85)] ${className}`}>
+    <motion.section ref={ref} id={id}
+      style={{ position: "sticky", top, zIndex: z, scale, filter, transformOrigin: "center top" }}
+      className={`${bare ? "" : "bg-[#0a0a0a] border-t border-white/10 rounded-t-[3rem] shadow-[0_-30px_80px_rgba(0,0,0,0.85)]"} ${className}`}>
       {children}
-    </section>
+    </motion.section>
   );
 }
 
@@ -77,7 +114,7 @@ export default function Portfolio() {
                     <a key={c.label} href={c.href} target="_blank" rel="noopener noreferrer"
                       onClick={() => setHireOpen(false)}
                       className="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-[#D4AF37]/10 transition-all group">
-                      <span className="text-xl">{c.icon}</span>
+                      <span className="text-[#D4AF37]"><ContactIcon type={c.type} /></span>
                       <span>
                         <span className="block text-white font-bold text-sm group-hover:text-[#D4AF37] transition-colors">{c.label}</span>
                         <span className="block text-gray-500 text-xs">{c.value}</span>
@@ -92,7 +129,7 @@ export default function Portfolio() {
       </nav>
 
       {/* HERO — bottom of the card stack; About slides in over it */}
-      <section className="h-screen flex flex-col justify-center items-center text-center px-6 pt-20 sticky top-0" style={{ zIndex: 1 }}>
+      <StackSection z={1} bare className="h-screen flex flex-col justify-center items-center text-center px-6 pt-20">
         <div>
           <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
             className="text-[#D4AF37]/60 font-mono tracking-[0.5em] text-[10px] uppercase mb-8">Data Scientist · AI Engineer · Data Analyst</motion.p>
@@ -110,7 +147,7 @@ export default function Portfolio() {
             ))}
           </motion.div>
         </div>
-      </section>
+      </StackSection>
 
       {/* ABOUT */}
       <StackSection id="about" z={2} className="py-32 px-10 min-h-screen flex items-center">
@@ -142,7 +179,7 @@ export default function Portfolio() {
                         if (fb) fb.style.display = "block";
                       }} />
                   ) : null}
-                  <span className="text-2xl text-[#D4AF37]/80 group-hover:text-[#D4AF37] transition-colors"
+                  <span className="text-3xl text-gray-400 group-hover:text-[#D4AF37] transition-colors"
                     style={{ display: skill.logo ? "none" : "block" }}>{skill.glyph ?? "✦"}</span>
                 </div>
                 <span className="font-bold text-gray-500 group-hover:text-white text-[10px] uppercase tracking-widest">{skill.name}</span>
@@ -427,7 +464,7 @@ export default function Portfolio() {
             {CONTACTS.map((c, i) => (
               <motion.a key={c.label} {...stagger(i)} href={c.href} target="_blank" rel="noopener noreferrer"
                 className="group bg-white/[0.02] border border-white/10 hover:border-[#D4AF37]/50 rounded-[2rem] p-10 transition-all hover:scale-[1.03]">
-                <span className="text-4xl block mb-5">{c.icon}</span>
+                <span className="flex justify-center text-[#D4AF37]/80 group-hover:text-[#D4AF37] transition-colors mb-6"><ContactIcon type={c.type} className="w-10 h-10" /></span>
                 <span className="block text-xl font-bold mb-1 group-hover:text-[#D4AF37] transition-colors">{c.label}</span>
                 <span className="block text-gray-500 text-sm break-all">{c.value}</span>
               </motion.a>
