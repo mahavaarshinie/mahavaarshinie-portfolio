@@ -16,6 +16,18 @@ export interface Workshop {
   images: string[];
 }
 
+export interface Achievement {
+  award: string;
+  title: string;
+  organisation: string;
+  date: string;
+  desc: string;
+  certImage?: string;
+  link?: string;
+  linkLabel?: string;
+  stat?: { value: string; label: string };
+}
+
 export const USER_INFO = {
   name: "MAHA VAARSHINIE ARUPATHA RAJOO",
   title: "Data Scientist",
@@ -121,6 +133,27 @@ export const WORKSHOP: Workshop[] = [
     date: "2026",
     desc: "Conducted a hands-on session guiding students through data visualization best practices, DAX calculations, and interactive dashboard design.",
     images: ["/workshop-1.jpg", "/workshop-2.jpg", "/workshop-3.jpg"]
+  }
+];
+
+export const ACHIEVEMENTS: Achievement[] = [
+  {
+    award: "Silver Medal",
+    title: "iNVENTX Invention Competition 2026",
+    organisation: "Multimedia University, Cyberjaya",
+    date: "July 2026",
+    desc: "Awarded the Silver Medal for the research project \"Leveraging Machine Learning Architectures for the Robust Identification of Deepfake Content\" — a Dual-Stream Hybrid CNN fusing Xception's micro-textural analysis with ResNet50's macro-structural mapping, achieving 98.05% accuracy and a 98.83% F1-Score on FaceForensics++.",
+    certImage: "/inventx.png",
+    link: "https://inventx.mmu.edu.my/booth.html?#A133",
+    linkLabel: "Visit Virtual Booth"
+  },
+  {
+    award: "Best Project Award — 5th Place",
+    title: "Deepfake Detection Using Machine Learning Models",
+    organisation: "Final Year Project, Multimedia University",
+    date: "2026",
+    desc: "Final year project ranked 5th for the Best Project Award, competing against the entire Data Science cohort's final year projects.",
+    stat: { value: "Top 5", label: "of 279 Data Science Projects" }
   }
 ];
 
