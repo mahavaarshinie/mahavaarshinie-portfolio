@@ -1,16 +1,47 @@
 "use client";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
-import { USER_INFO, PROJECTS, EXPERIENCE, SKILLS, CERTIFICATIONS, PUBLICATION, EDUCATION, COCURRICULAR, WORKSHOP, Project, Workshop, HACKATHONS, ACHIEVEMENTS, Achievement } from "../lib/data";
+import { motion } from "framer-motion";
+import { useEffect, useRef, useState, ReactNode } from "react";
+import { USER_INFO, PROJECTS, EXPERIENCE, SKILLS, CERTIFICATIONS, PUBLICATION, EDUCATION, COCURRICULAR, WORKSHOP, Project, Workshop, Skill, HACKATHONS, ACHIEVEMENTS, Achievement } from "../lib/data";
 
 const fadeUp = { initial: { opacity: 0, y: 40 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true }, transition: { duration: 0.8 } };
 const stagger = (i: number) => ({ ...fadeUp, transition: { duration: 0.6, delay: i * 0.1 } });
 
+const CONTACTS = [
+  { label: "WhatsApp", value: "Chat instantly", href: `https://wa.me/${USER_INFO.whatsapp}`, icon: "💬" },
+  { label: "Email", value: USER_INFO.email, href: `mailto:${USER_INFO.email}`, icon: "✉️" },
+  { label: "LinkedIn", value: "Let's connect", href: USER_INFO.linkedin, icon: "💼" },
+];
+
+/**
+ * Card-stack scrolling: each section is sticky so it pins in place once fully
+ * scrolled, and the next section slides in over it. Sections taller than the
+ * viewport pin at `top: viewport - height` so all their content stays reachable.
+ */
+function StackSection({ id, z, className = "", children }: { id?: string; z: number; className?: string; children: ReactNode }) {
+  const ref = useRef<HTMLElement>(null);
+  const [top, setTop] = useState(0);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const update = () => setTop(Math.min(0, window.innerHeight - el.offsetHeight));
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    window.addEventListener("resize", update);
+    return () => { ro.disconnect(); window.removeEventListener("resize", update); };
+  }, []);
+
+  return (
+    <section ref={ref} id={id} style={{ position: "sticky", top, zIndex: z }}
+      className={`bg-[#0a0a0a] border-t border-white/10 rounded-t-[3rem] shadow-[0_-30px_80px_rgba(0,0,0,0.85)] ${className}`}>
+      {children}
+    </section>
+  );
+}
+
 export default function Portfolio() {
-  const heroRef = useRef(null);
-  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+  const [hireOpen, setHireOpen] = useState(false);
 
   return (
     <main className="relative text-white selection:bg-[#D4AF37]/40 scroll-smooth overflow-x-hidden font-sans"
@@ -33,19 +64,38 @@ export default function Portfolio() {
             {["about", "education", "experience", "achievements", "projects", "activities"].map(s => (
               <a key={s} href={`#${s}`} className="hover:text-white transition-colors capitalize">{s}</a>
             ))}
-            <a href={USER_INFO.linkedin} target="_blank"
-              className="bg-[#D4AF37] text-black px-6 py-2 rounded-lg font-bold hover:scale-105 transition-all shadow-[0_0_20px_rgba(212,175,55,0.3)]">
-              LinkedIn
-            </a>
+
+            {/* Hire Me dropdown */}
+            <div className="relative">
+              <button onClick={() => setHireOpen(o => !o)}
+                className="bg-[#D4AF37] text-black px-6 py-2 rounded-lg font-bold hover:scale-105 transition-all shadow-[0_0_20px_rgba(212,175,55,0.3)]">
+                Hire Me
+              </button>
+              {hireOpen && (
+                <div className="absolute right-0 top-full mt-4 w-64 bg-black/90 backdrop-blur-xl border border-[#D4AF37]/30 rounded-2xl p-3 flex flex-col gap-1 shadow-[0_20px_60px_rgba(0,0,0,0.8)]">
+                  {CONTACTS.map(c => (
+                    <a key={c.label} href={c.href} target="_blank" rel="noopener noreferrer"
+                      onClick={() => setHireOpen(false)}
+                      className="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-[#D4AF37]/10 transition-all group">
+                      <span className="text-xl">{c.icon}</span>
+                      <span>
+                        <span className="block text-white font-bold text-sm group-hover:text-[#D4AF37] transition-colors">{c.label}</span>
+                        <span className="block text-gray-500 text-xs">{c.value}</span>
+                      </span>
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
           </motion.div>
         </div>
       </nav>
 
-      {/* HERO */}
-      <section ref={heroRef} className="h-screen flex flex-col justify-center items-center text-center px-6 pt-20">
-        <motion.div style={{ y: heroY, opacity: heroOpacity }}>
+      {/* HERO — bottom of the card stack; About slides in over it */}
+      <section className="h-screen flex flex-col justify-center items-center text-center px-6 pt-20 sticky top-0" style={{ zIndex: 1 }}>
+        <div>
           <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-            className="text-[#D4AF37]/60 font-mono tracking-[0.5em] text-[10px] uppercase mb-8">Data Scientist · MMU · 2026</motion.p>
+            className="text-[#D4AF37]/60 font-mono tracking-[0.5em] text-[10px] uppercase mb-8">Data Scientist · AI Engineer · Data Analyst</motion.p>
           <motion.h1 initial={{ opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.2 }}
             className="text-7xl md:text-[11rem] font-black tracking-tighter leading-none mb-8 bg-gradient-to-b from-white via-white/90 to-gray-600 bg-clip-text text-transparent">
             MAHA <br /> VAARSHINIE
@@ -59,11 +109,11 @@ export default function Portfolio() {
                 className="text-gray-500 hover:text-white transition-all text-sm font-bold tracking-widest border-b border-white/10 hover:border-[#D4AF37] pb-1">{label}</a>
             ))}
           </motion.div>
-        </motion.div>
+        </div>
       </section>
 
       {/* ABOUT */}
-      <motion.section id="about" {...fadeUp} className="py-32 px-10">
+      <StackSection id="about" z={2} className="py-32 px-10 min-h-screen flex items-center">
         <div className="max-w-4xl mx-auto text-center">
           <p className="text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-10">About Me</p>
           <p className="text-lg md:text-xl text-gray-300 leading-relaxed font-light">{USER_INFO.about}</p>
@@ -72,30 +122,38 @@ export default function Portfolio() {
             {USER_INFO.email}
           </a>
         </div>
-      </motion.section>
+      </StackSection>
 
       {/* SKILLS */}
-      <motion.section {...fadeUp} className="py-24 px-10">
+      <StackSection z={3} className="py-24 px-10">
         <div className="max-w-6xl mx-auto bg-white/[0.02] border border-white/10 rounded-[3rem] p-16 backdrop-blur-3xl">
           <p className="text-center text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-16">Technical Arsenal</p>
           <div className="flex flex-wrap justify-center gap-10">
-            {SKILLS.map((skill, i) => (
+            {SKILLS.map((skill: Skill, i: number) => (
               <motion.div key={i} initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }} transition={{ delay: i * 0.07 }}
+                viewport={{ once: true }} transition={{ delay: i * 0.05 }}
                 className="flex flex-col items-center gap-4 group">
                 <div className="w-20 h-20 flex items-center justify-center bg-white/[0.03] border border-white/10 rounded-2xl group-hover:border-[#D4AF37]/50 transition-all">
-                  <img src={skill.logo} alt={skill.name} className="w-10 h-10 object-contain grayscale group-hover:grayscale-0 transition-all"
-                    onError={(e) => { e.currentTarget.style.display = "none"; }} />
+                  {skill.logo ? (
+                    <img src={skill.logo} alt={skill.name} className="w-10 h-10 object-contain grayscale group-hover:grayscale-0 transition-all"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                        const fb = e.currentTarget.nextElementSibling as HTMLElement | null;
+                        if (fb) fb.style.display = "block";
+                      }} />
+                  ) : null}
+                  <span className="text-2xl text-[#D4AF37]/80 group-hover:text-[#D4AF37] transition-colors"
+                    style={{ display: skill.logo ? "none" : "block" }}>{skill.glyph ?? "✦"}</span>
                 </div>
                 <span className="font-bold text-gray-500 group-hover:text-white text-[10px] uppercase tracking-widest">{skill.name}</span>
               </motion.div>
             ))}
           </div>
         </div>
-      </motion.section>
+      </StackSection>
 
       {/* EDUCATION */}
-      <motion.section id="education" {...fadeUp} className="py-32 px-10 border-y border-white/5">
+      <StackSection id="education" z={4} className="py-32 px-10">
         <div className="max-w-6xl mx-auto">
           <p className="text-center text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-20">Academic Background</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -117,19 +175,19 @@ export default function Portfolio() {
             ))}
           </div>
         </div>
-      </motion.section>
+      </StackSection>
 
       {/* EXPERIENCE */}
-      <motion.section id="experience" {...fadeUp} className="py-40 px-6 border-b border-white/5">
+      <StackSection id="experience" z={5} className="py-40 px-6">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-20">Professional Journey</p>
-          
+
           {EXPERIENCE.map((exp, i) => (
             <div key={i}>
               <motion.span {...fadeUp} className="text-gray-600 font-mono text-sm tracking-[0.3em] uppercase mb-6 block">{exp.date}</motion.span>
               <motion.h3 {...fadeUp} className="text-5xl md:text-[7rem] font-bold mb-4 leading-none tracking-tighter uppercase">{exp.role}</motion.h3>
               <motion.p {...fadeUp} className="text-xl text-gray-500 mb-14 italic uppercase">{exp.company}</motion.p>
-              
+
               {/* Task Pills */}
               <div className="flex flex-wrap justify-center gap-5 max-w-4xl mx-auto mb-16">
                 {exp.tasks.map((task, idx) => (
@@ -142,32 +200,32 @@ export default function Portfolio() {
               {/* Internship Images Gallery */}
               <motion.div {...fadeUp} className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto mt-10">
                 {exp.images.map((img, idx) => (
-                  <img 
-                    key={idx} 
-                    src={img} 
-                    alt={`Internship ${idx + 1}`} 
-                    className="rounded-2xl w-full h-64 object-cover hover:scale-[1.02] transition-transform duration-300 border border-white/10" 
+                  <img
+                    key={idx}
+                    src={img}
+                    alt={`Internship ${idx + 1}`}
+                    className="rounded-2xl w-full h-64 object-cover hover:scale-[1.02] transition-transform duration-300 border border-white/10"
                   />
                 ))}
               </motion.div>
             </div>
           ))}
         </div>
-      </motion.section>
+      </StackSection>
 
       {/* PUBLICATION */}
-      <motion.section {...fadeUp} className="py-28 px-10">
+      <StackSection z={6} className="py-28 px-10">
         <div className="max-w-5xl mx-auto text-center mb-6">
           <p className="text-[#D4AF37] uppercase tracking-widest text-[10px] font-bold">Selected Publication</p>
         </div>
         <div className="max-w-5xl mx-auto p-14 bg-gradient-to-r from-[#D4AF37]/10 to-transparent border border-[#D4AF37]/20 rounded-[3rem]">
           <h3 className="text-3xl font-bold mb-5 italic leading-tight">"{PUBLICATION.title}"</h3>
           <p className="text-gray-400 text-lg leading-relaxed mb-8">{PUBLICATION.details}</p>
-          
+
           {/* Certificate Link */}
-          <a 
-            href={PUBLICATION.certPdf} 
-            target="_blank" 
+          <a
+            href={PUBLICATION.certPdf}
+            target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-[#D4AF37] font-bold text-sm tracking-widest uppercase border-b border-[#D4AF37] pb-1 hover:text-white transition-colors"
           >
@@ -175,10 +233,10 @@ export default function Portfolio() {
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
           </a>
         </div>
-      </motion.section>
+      </StackSection>
 
       {/* ACHIEVEMENTS */}
-      <motion.section id="achievements" {...fadeUp} className="py-32 px-10 border-t border-white/5">
+      <StackSection id="achievements" z={7} className="py-32 px-10">
         <div className="max-w-6xl mx-auto">
           <p className="text-center text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-20">Awards & Achievements</p>
           <div className="flex flex-col gap-10">
@@ -218,14 +276,14 @@ export default function Portfolio() {
             ))}
           </div>
         </div>
-      </motion.section>
+      </StackSection>
 
       {/* KNOWLEDGE SHARING (WORKSHOPS) */}
-      <motion.section id="workshops" {...fadeUp} className="py-28 px-10 border-t border-white/5">
+      <StackSection id="workshops" z={8} className="py-28 px-10">
         <div className="max-w-5xl mx-auto text-center mb-10">
           <p className="text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold">Knowledge Sharing</p>
         </div>
-        
+
         <div className="max-w-5xl mx-auto p-14 bg-gradient-to-r from-[#D4AF37]/10 to-transparent border border-[#D4AF37]/20 rounded-[3rem]">
           {WORKSHOP.map((ws: Workshop, i: number) => (
             <div key={i} className="flex flex-col gap-10 text-center">
@@ -239,51 +297,62 @@ export default function Portfolio() {
               {/* Images Row */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {ws.images.map((img: string, idx: number) => (
-                  <img 
-                    key={idx} 
-                    src={img} 
-                    alt={`Workshop ${idx + 1}`} 
-                    className="rounded-2xl w-full h-64 object-cover hover:scale-[1.02] transition-transform duration-300" 
+                  <img
+                    key={idx}
+                    src={img}
+                    alt={`Workshop ${idx + 1}`}
+                    className="rounded-2xl w-full h-64 object-cover hover:scale-[1.02] transition-transform duration-300"
                   />
                 ))}
               </div>
             </div>
           ))}
         </div>
-      </motion.section>
+      </StackSection>
 
       {/* PROJECTS */}
-      <section id="projects" className="py-32 px-10 max-w-7xl mx-auto">
-        <motion.p {...fadeUp} className="text-center text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-24">Intelligence Registry</motion.p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
-          {PROJECTS.map((project: Project, i: number) => (
-            <motion.div key={i} {...stagger(i)} whileHover={{ y: -8 }} transition={{ duration: 0.3 }}
-              className="group bg-white/[0.02] border border-white/10 rounded-[3rem] overflow-hidden hover:border-[#D4AF37]/30 transition-all">
-              <div className="h-[380px] overflow-hidden">
-                <img src={project.image} alt={project.title} className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000" />
-              </div>
-              <div className="p-12">
-                <h4 className="text-3xl font-bold mb-4 group-hover:text-[#D4AF37] transition-colors uppercase">{project.title}</h4>
-                <p className="text-gray-500 leading-relaxed mb-8">{project.desc}</p>
-                <div className="flex flex-wrap gap-3 mb-8">
-                  {project.tags.map(tag => (
-                    <span key={tag} className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#D4AF37] bg-[#D4AF37]/5 px-5 py-2 rounded-xl border border-[#D4AF37]/10">{tag}</span>
-                  ))}
+      <StackSection id="projects" z={9} className="py-32 px-10">
+        <div className="max-w-7xl mx-auto">
+          <motion.p {...fadeUp} className="text-center text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-24">Intelligence Registry</motion.p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
+            {PROJECTS.map((project: Project, i: number) => (
+              <motion.div key={i} {...stagger(i)} whileHover={{ y: -8 }} transition={{ duration: 0.3 }}
+                className="group bg-white/[0.02] border border-white/10 rounded-[3rem] overflow-hidden hover:border-[#D4AF37]/30 transition-all">
+                <div className="h-[380px] overflow-hidden">
+                  <img src={project.image} alt={project.title} className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000" />
                 </div>
-                {/* Repo Link - only shows if it exists in data.ts */}
-                {project.repo && project.repo.length > 0 && (
-                  <a href={project.repo} target="_blank" rel="noopener noreferrer" className="text-sm font-bold text-white border-b border-[#D4AF37] pb-1 hover:text-[#D4AF37] transition-colors">
-                    VIEW REPOSITORY
-                  </a>
-                )}
-              </div>
-            </motion.div>
-          ))}
+                <div className="p-12">
+                  <h4 className="text-3xl font-bold mb-4 group-hover:text-[#D4AF37] transition-colors uppercase">{project.title}</h4>
+                  <p className="text-gray-500 leading-relaxed mb-8">{project.desc}</p>
+                  <div className="flex flex-wrap gap-3 mb-8">
+                    {project.tags.map(tag => (
+                      <span key={tag} className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#D4AF37] bg-[#D4AF37]/5 px-5 py-2 rounded-xl border border-[#D4AF37]/10">{tag}</span>
+                    ))}
+                  </div>
+                  {/* Repo Link - only shows if it exists in data.ts */}
+                  {project.repo && project.repo.length > 0 && (
+                    <a href={project.repo} target="_blank" rel="noopener noreferrer" className="text-sm font-bold text-white border-b border-[#D4AF37] pb-1 hover:text-[#D4AF37] transition-colors">
+                      VIEW REPOSITORY
+                    </a>
+                  )}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* View All Projects */}
+          <motion.div {...fadeUp} className="text-center mt-24">
+            <a href={USER_INFO.github} target="_blank" rel="noopener noreferrer"
+              className="inline-flex items-center gap-3 border border-[#D4AF37]/40 hover:bg-[#D4AF37]/10 px-10 py-4 rounded-full text-sm font-bold tracking-[0.2em] uppercase text-[#D4AF37] transition-all hover:scale-105">
+              <span>View All Projects on GitHub</span>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+            </a>
+          </motion.div>
         </div>
-      </section>
+      </StackSection>
 
       {/* CO-CURRICULAR */}
-      <motion.section id="activities" {...fadeUp} className="py-32 px-10 border-t border-white/5">
+      <StackSection id="activities" z={10} className="py-32 px-10">
         <div className="max-w-6xl mx-auto">
           <p className="text-center text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-20">Leadership & Volunteering</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -293,7 +362,7 @@ export default function Portfolio() {
                 <h3 className="text-base font-bold text-white/90 mb-2 group-hover:text-[#D4AF37] transition-colors">{item.role}</h3>
                 <p className="text-gray-500 text-sm italic mb-3">{item.organisation}</p>
                 {item.date && <span className="text-[10px] font-mono tracking-widest text-gray-600 uppercase mb-6">{item.date}</span>}
-                
+
                 {/* Image Section */}
                 {item.images && item.images.length > 0 && (
                   <div className="mt-auto pt-4">
@@ -306,10 +375,10 @@ export default function Portfolio() {
             ))}
           </div>
         </div>
-      </motion.section>
+      </StackSection>
 
       {/* CERTS + HACKATHON */}
-      <motion.section {...fadeUp} className="py-32 px-10 border-t border-white/5">
+      <StackSection z={11} className="py-32 px-10">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16">
           <div className="bg-white/[0.02] p-16 rounded-[3rem] border border-white/5">
             <p className="text-[#D4AF37] uppercase tracking-widest text-[10px] font-bold mb-12">Certification Registry</p>
@@ -324,16 +393,16 @@ export default function Portfolio() {
               ))}
             </div>
           </div>
-          
+
           <motion.div whileHover={{ scale: 1.01 }}
             className="bg-gradient-to-br from-[#111] to-black p-16 rounded-[3rem] border border-white/5 flex flex-col justify-center">
             <p className="text-[#D4AF37] uppercase tracking-widest text-[10px] mb-8 font-bold">Hackathon Presence</p>
             <h3 className="text-5xl font-bold mb-8 italic tracking-tighter">2x International Participant</h3>
             <p className="text-gray-500 leading-relaxed text-xl mb-10">Rapid prototyping and predictive analytics applied to global challenges under intense timelines.</p>
-            
+
             <div className="flex flex-col gap-4">
               {HACKATHONS.map((h, i) => (
-                <a key={i} href={h.certPath} target="_blank" rel="noopener noreferrer" 
+                <a key={i} href={h.certPath} target="_blank" rel="noopener noreferrer"
                    className="text-[#D4AF37] border border border-[#D4AF37]/30 px-6 py-3 rounded-xl text-sm font-bold uppercase tracking-widest hover:bg-[#D4AF37]/10 transition-all text-center">
                   View {h.title} Certificate
                 </a>
@@ -341,9 +410,33 @@ export default function Portfolio() {
             </div>
           </motion.div>
         </div>
-      </motion.section>
+      </StackSection>
 
-      <footer className="py-20 text-center text-gray-800 text-[11px] tracking-[1.5em] uppercase border-t border-white/5">
+      {/* HIRE ME */}
+      <StackSection id="hire" z={12} className="py-40 px-10 min-h-screen flex items-center"
+      >
+        <div className="max-w-5xl mx-auto text-center w-full">
+          <p className="text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-10">Open To Opportunities</p>
+          <h2 className="text-6xl md:text-[8rem] font-black tracking-tighter leading-none mb-10 bg-gradient-to-b from-white via-white/90 to-gray-600 bg-clip-text text-transparent">
+            LET'S WORK<br />TOGETHER
+          </h2>
+          <p className="text-gray-400 text-lg md:text-xl leading-relaxed max-w-2xl mx-auto mb-16 font-light">
+            Looking for a Data Scientist, AI Engineer, or Data Analyst? I'm open to full-time roles, freelance projects, and collaborations — let's talk.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {CONTACTS.map((c, i) => (
+              <motion.a key={c.label} {...stagger(i)} href={c.href} target="_blank" rel="noopener noreferrer"
+                className="group bg-white/[0.02] border border-white/10 hover:border-[#D4AF37]/50 rounded-[2rem] p-10 transition-all hover:scale-[1.03]">
+                <span className="text-4xl block mb-5">{c.icon}</span>
+                <span className="block text-xl font-bold mb-1 group-hover:text-[#D4AF37] transition-colors">{c.label}</span>
+                <span className="block text-gray-500 text-sm break-all">{c.value}</span>
+              </motion.a>
+            ))}
+          </div>
+        </div>
+      </StackSection>
+
+      <footer className="relative py-20 text-center text-gray-800 text-[11px] tracking-[1.5em] uppercase border-t border-white/5 bg-[#0a0a0a]" style={{ zIndex: 13 }}>
         MAHA VAARSHINIE RAJOO • 2026
       </footer>
     </main>
