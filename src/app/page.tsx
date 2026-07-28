@@ -1,6 +1,6 @@
 "use client";
-import { motion, useScroll, useTransform, useMotionTemplate, useSpring } from "framer-motion";
-import { useEffect, useRef, useState, ReactNode } from "react";
+import { motion } from "framer-motion";
+import { useState } from "react";
 import { USER_INFO, PROJECTS, EXPERIENCE, SKILLS, CERTIFICATIONS, PUBLICATION, EDUCATION, COCURRICULAR, WORKSHOP, Project, Workshop, Skill, HACKATHONS, ACHIEVEMENTS, Achievement } from "../lib/data";
 
 const fadeUp = { initial: { opacity: 0, y: 40 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true }, transition: { duration: 0.8 } };
@@ -31,58 +31,6 @@ function ContactIcon({ type, className = "w-5 h-5" }: { type: string; className?
   );
 }
 
-/**
- * Card-stack scrolling: each section is sticky so it pins in place once fully
- * scrolled, and the next section slides in over it while the pinned one
- * shrinks, slides up and dims underneath — like cards being stacked on a deck.
- * Sections taller than the viewport pin at `top: viewport - height` so all
- * their content stays reachable.
- */
-function StackSection({ id, z, className = "", bare = false, children }: { id?: string; z: number; className?: string; bare?: boolean; children: ReactNode }) {
-  const ref = useRef<HTMLElement>(null);
-  const [top, setTop] = useState(0);
-  // scrollY window during which the next section slides over this one.
-  // The middle stop front-loads the animation: most of the shrink happens in
-  // the first 35% of the transition, while the covered card still fills most
-  // of the screen — otherwise the effect only reads when scrolling back up.
-  const [range, setRange] = useState<[number, number, number]>([0, 0.5, 1]);
-
-  const { scrollY } = useScroll();
-  const rawScale = useTransform(scrollY, range, [1, 0.9, 0.88]);
-  const rawY = useTransform(scrollY, range, [0, -100, -140]);
-  const scale = useSpring(rawScale, { stiffness: 300, damping: 40 });
-  const y = useSpring(rawY, { stiffness: 300, damping: 40 });
-  const brightness = useTransform(scrollY, range, [1, 0.45, 0.35]);
-  const filter = useMotionTemplate`brightness(${brightness})`;
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const update = () => {
-      const vh = window.innerHeight;
-      const h = el.offsetHeight;
-      setTop(Math.min(0, vh - h));
-      const start = el.offsetTop + Math.max(h - vh, 0);
-      const end = el.offsetTop + h;
-      setRange(end > start ? [start, start + (end - start) * 0.35, end] : [start, start + 0.5, start + 1]);
-    };
-    update();
-    const ro = new ResizeObserver(update);
-    ro.observe(el);
-    ro.observe(document.body);
-    window.addEventListener("resize", update);
-    return () => { ro.disconnect(); window.removeEventListener("resize", update); };
-  }, []);
-
-  return (
-    <motion.section ref={ref} id={id}
-      style={{ position: "sticky", top, zIndex: z, scale, y, filter, transformOrigin: "center top" }}
-      className={`${bare ? "" : "bg-[#0a0a0a] border-t border-[#D4AF37]/15 rounded-t-[3rem] shadow-[0_-40px_100px_rgba(0,0,0,0.95)]"} ${className}`}>
-      {children}
-    </motion.section>
-  );
-}
-
 export default function Portfolio() {
   const [hireOpen, setHireOpen] = useState(false);
 
@@ -104,7 +52,7 @@ export default function Portfolio() {
             className="text-xl font-bold tracking-tighter">Maha Vaarshinie</motion.span>
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
             className="hidden md:flex items-center gap-10 text-sm font-medium text-gray-400">
-            {["about", "experience", "projects", "achievements", "education", "activities"].map(s => (
+            {["about", "education", "experience", "projects", "achievements", "activities"].map(s => (
               <a key={s} href={`#${s}`} className="hover:text-white transition-colors capitalize">{s}</a>
             ))}
 
@@ -134,8 +82,8 @@ export default function Portfolio() {
         </div>
       </nav>
 
-      {/* HERO — bottom of the card stack; About slides in over it */}
-      <StackSection z={1} bare className="h-screen flex flex-col justify-center items-center text-center px-6 pt-20">
+      {/* HERO */}
+      <section className="h-screen flex flex-col justify-center items-center text-center px-6 pt-20">
         <div>
           <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
             className="text-[#D4AF37]/60 font-mono tracking-[0.5em] text-[10px] uppercase mb-8">Data Scientist · AI Engineer · Data Analyst</motion.p>
@@ -153,10 +101,10 @@ export default function Portfolio() {
             ))}
           </motion.div>
         </div>
-      </StackSection>
+      </section>
 
       {/* ABOUT */}
-      <StackSection id="about" z={2} className="py-32 px-10 min-h-screen flex items-center">
+      <motion.section id="about" {...fadeUp} className="py-32 px-10">
         <div className="max-w-4xl mx-auto text-center">
           <p className="text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-10">About Me</p>
           <p className="text-lg md:text-xl text-gray-300 leading-relaxed font-light">{USER_INFO.about}</p>
@@ -165,10 +113,10 @@ export default function Portfolio() {
             {USER_INFO.email}
           </a>
         </div>
-      </StackSection>
+      </motion.section>
 
       {/* SKILLS */}
-      <StackSection z={3} className="py-24 px-10">
+      <motion.section {...fadeUp} className="py-24 px-10">
         <div className="max-w-6xl mx-auto bg-white/[0.02] border border-white/10 rounded-[3rem] p-16 backdrop-blur-3xl">
           <p className="text-center text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-16">Technical Arsenal</p>
           <div className="flex flex-wrap justify-center gap-10">
@@ -193,10 +141,35 @@ export default function Portfolio() {
             ))}
           </div>
         </div>
-      </StackSection>
+      </motion.section>
+
+      {/* EDUCATION */}
+      <motion.section id="education" {...fadeUp} className="py-32 px-10 border-y border-white/5">
+        <div className="max-w-6xl mx-auto">
+          <p className="text-center text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-20">Academic Background</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {EDUCATION.map((edu, i) => (
+              <motion.div key={i} {...stagger(i)}
+                className="relative bg-white/[0.02] border border-white/10 rounded-[2.5rem] p-12 hover:border-[#D4AF37]/30 transition-all group overflow-hidden">
+                <div className="absolute top-0 right-0 w-28 h-28 bg-[#D4AF37]/5 rounded-bl-[2.5rem] group-hover:bg-[#D4AF37]/10 transition-all" />
+                <span className="text-[#D4AF37] font-mono text-[10px] tracking-[0.3em] uppercase mb-5 block">{edu.date}</span>
+                <h3 className="text-xl font-bold mb-2 group-hover:text-[#D4AF37] transition-colors">{edu.degree}</h3>
+                <p className="text-gray-500 italic mb-8">{edu.institution}</p>
+                <div className="flex items-end justify-between">
+                  <div>
+                    <p className="text-[10px] uppercase tracking-widest text-gray-600 mb-1">CGPA</p>
+                    <p className="text-5xl font-black text-white/80">{edu.cgpa}</p>
+                  </div>
+                  <p className="text-gray-600 text-xs tracking-widest uppercase">{edu.location}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </motion.section>
 
       {/* EXPERIENCE */}
-      <StackSection id="experience" z={4} className="py-40 px-6">
+      <motion.section id="experience" {...fadeUp} className="py-40 px-6 border-b border-white/5">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-20">Professional Journey</p>
 
@@ -229,51 +202,49 @@ export default function Portfolio() {
             </div>
           ))}
         </div>
-      </StackSection>
+      </motion.section>
 
       {/* PROJECTS */}
-      <StackSection id="projects" z={5} className="py-32 px-10">
-        <div className="max-w-7xl mx-auto">
-          <motion.p {...fadeUp} className="text-center text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-24">Intelligence Registry</motion.p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
-            {PROJECTS.map((project: Project, i: number) => (
-              <motion.div key={i} {...stagger(i)} whileHover={{ y: -8 }} transition={{ duration: 0.3 }}
-                className="group bg-white/[0.02] border border-white/10 rounded-[3rem] overflow-hidden hover:border-[#D4AF37]/30 transition-all">
-                <div className="h-[380px] overflow-hidden">
-                  <img src={project.image} alt={project.title} className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000" />
+      <section id="projects" className="py-32 px-10 max-w-7xl mx-auto">
+        <motion.p {...fadeUp} className="text-center text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-24">Intelligence Registry</motion.p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
+          {PROJECTS.map((project: Project, i: number) => (
+            <motion.div key={i} {...stagger(i)} whileHover={{ y: -8 }} transition={{ duration: 0.3 }}
+              className="group bg-white/[0.02] border border-white/10 rounded-[3rem] overflow-hidden hover:border-[#D4AF37]/30 transition-all">
+              <div className="h-[380px] overflow-hidden">
+                <img src={project.image} alt={project.title} className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000" />
+              </div>
+              <div className="p-12">
+                <h4 className="text-3xl font-bold mb-4 group-hover:text-[#D4AF37] transition-colors uppercase">{project.title}</h4>
+                <p className="text-gray-500 leading-relaxed mb-8">{project.desc}</p>
+                <div className="flex flex-wrap gap-3 mb-8">
+                  {project.tags.map(tag => (
+                    <span key={tag} className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#D4AF37] bg-[#D4AF37]/5 px-5 py-2 rounded-xl border border-[#D4AF37]/10">{tag}</span>
+                  ))}
                 </div>
-                <div className="p-12">
-                  <h4 className="text-3xl font-bold mb-4 group-hover:text-[#D4AF37] transition-colors uppercase">{project.title}</h4>
-                  <p className="text-gray-500 leading-relaxed mb-8">{project.desc}</p>
-                  <div className="flex flex-wrap gap-3 mb-8">
-                    {project.tags.map(tag => (
-                      <span key={tag} className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#D4AF37] bg-[#D4AF37]/5 px-5 py-2 rounded-xl border border-[#D4AF37]/10">{tag}</span>
-                    ))}
-                  </div>
-                  {/* Repo Link - only shows if it exists in data.ts */}
-                  {project.repo && project.repo.length > 0 && (
-                    <a href={project.repo} target="_blank" rel="noopener noreferrer" className="text-sm font-bold text-white border-b border-[#D4AF37] pb-1 hover:text-[#D4AF37] transition-colors">
-                      VIEW REPOSITORY
-                    </a>
-                  )}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* View All Projects */}
-          <motion.div {...fadeUp} className="text-center mt-24">
-            <a href={USER_INFO.github} target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 border border-[#D4AF37]/40 hover:bg-[#D4AF37]/10 px-10 py-4 rounded-full text-sm font-bold tracking-[0.2em] uppercase text-[#D4AF37] transition-all hover:scale-105">
-              <span>View All Projects on GitHub</span>
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-            </a>
-          </motion.div>
+                {/* Repo Link - only shows if it exists in data.ts */}
+                {project.repo && project.repo.length > 0 && (
+                  <a href={project.repo} target="_blank" rel="noopener noreferrer" className="text-sm font-bold text-white border-b border-[#D4AF37] pb-1 hover:text-[#D4AF37] transition-colors">
+                    VIEW REPOSITORY
+                  </a>
+                )}
+              </div>
+            </motion.div>
+          ))}
         </div>
-      </StackSection>
+
+        {/* View All Projects */}
+        <motion.div {...fadeUp} className="text-center mt-24">
+          <a href={USER_INFO.github} target="_blank" rel="noopener noreferrer"
+            className="inline-flex items-center gap-3 border border-[#D4AF37]/40 hover:bg-[#D4AF37]/10 px-10 py-4 rounded-full text-sm font-bold tracking-[0.2em] uppercase text-[#D4AF37] transition-all hover:scale-105">
+            <span>View All Projects on GitHub</span>
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+          </a>
+        </motion.div>
+      </section>
 
       {/* ACHIEVEMENTS */}
-      <StackSection id="achievements" z={6} className="py-32 px-10">
+      <motion.section id="achievements" {...fadeUp} className="py-32 px-10 border-t border-white/5">
         <div className="max-w-6xl mx-auto">
           <p className="text-center text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-20">Awards & Achievements</p>
           <div className="flex flex-col gap-10">
@@ -313,10 +284,10 @@ export default function Portfolio() {
             ))}
           </div>
         </div>
-      </StackSection>
+      </motion.section>
 
       {/* PUBLICATION */}
-      <StackSection z={7} className="py-28 px-10">
+      <motion.section {...fadeUp} className="py-28 px-10">
         <div className="max-w-5xl mx-auto text-center mb-6">
           <p className="text-[#D4AF37] uppercase tracking-widest text-[10px] font-bold">Selected Publication</p>
         </div>
@@ -335,35 +306,10 @@ export default function Portfolio() {
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
           </a>
         </div>
-      </StackSection>
-
-      {/* EDUCATION */}
-      <StackSection id="education" z={8} className="py-32 px-10">
-        <div className="max-w-6xl mx-auto">
-          <p className="text-center text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-20">Academic Background</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {EDUCATION.map((edu, i) => (
-              <motion.div key={i} {...stagger(i)}
-                className="relative bg-white/[0.02] border border-white/10 rounded-[2.5rem] p-12 hover:border-[#D4AF37]/30 transition-all group overflow-hidden">
-                <div className="absolute top-0 right-0 w-28 h-28 bg-[#D4AF37]/5 rounded-bl-[2.5rem] group-hover:bg-[#D4AF37]/10 transition-all" />
-                <span className="text-[#D4AF37] font-mono text-[10px] tracking-[0.3em] uppercase mb-5 block">{edu.date}</span>
-                <h3 className="text-xl font-bold mb-2 group-hover:text-[#D4AF37] transition-colors">{edu.degree}</h3>
-                <p className="text-gray-500 italic mb-8">{edu.institution}</p>
-                <div className="flex items-end justify-between">
-                  <div>
-                    <p className="text-[10px] uppercase tracking-widest text-gray-600 mb-1">CGPA</p>
-                    <p className="text-5xl font-black text-white/80">{edu.cgpa}</p>
-                  </div>
-                  <p className="text-gray-600 text-xs tracking-widest uppercase">{edu.location}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </StackSection>
+      </motion.section>
 
       {/* KNOWLEDGE SHARING (WORKSHOPS) */}
-      <StackSection id="workshops" z={9} className="py-28 px-10">
+      <motion.section id="workshops" {...fadeUp} className="py-28 px-10 border-t border-white/5">
         <div className="max-w-5xl mx-auto text-center mb-10">
           <p className="text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold">Knowledge Sharing</p>
         </div>
@@ -392,10 +338,10 @@ export default function Portfolio() {
             </div>
           ))}
         </div>
-      </StackSection>
+      </motion.section>
 
       {/* CO-CURRICULAR */}
-      <StackSection id="activities" z={10} className="py-32 px-10">
+      <motion.section id="activities" {...fadeUp} className="py-32 px-10 border-t border-white/5">
         <div className="max-w-6xl mx-auto">
           <p className="text-center text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-20">Leadership & Volunteering</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -418,10 +364,10 @@ export default function Portfolio() {
             ))}
           </div>
         </div>
-      </StackSection>
+      </motion.section>
 
       {/* CERTS + HACKATHON */}
-      <StackSection z={11} className="py-32 px-10">
+      <motion.section {...fadeUp} className="py-32 px-10 border-t border-white/5">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16">
           <div className="bg-white/[0.02] p-16 rounded-[3rem] border border-white/5">
             <p className="text-[#D4AF37] uppercase tracking-widest text-[10px] font-bold mb-12">Certification Registry</p>
@@ -453,10 +399,10 @@ export default function Portfolio() {
             </div>
           </motion.div>
         </div>
-      </StackSection>
+      </motion.section>
 
       {/* HIRE ME */}
-      <StackSection id="hire" z={12} className="py-40 px-10 min-h-screen flex items-center">
+      <motion.section id="hire" {...fadeUp} className="py-40 px-10 border-t border-white/5">
         <div className="max-w-5xl mx-auto text-center w-full">
           <p className="text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-10">Open To Opportunities</p>
           <h2 className="text-6xl md:text-[8rem] font-black tracking-tighter leading-none mb-10 bg-gradient-to-b from-white via-white/90 to-gray-600 bg-clip-text text-transparent">
@@ -476,9 +422,9 @@ export default function Portfolio() {
             ))}
           </div>
         </div>
-      </StackSection>
+      </motion.section>
 
-      <footer className="relative py-20 text-center text-gray-800 text-[11px] tracking-[1.5em] uppercase border-t border-white/5 bg-[#0a0a0a]" style={{ zIndex: 13 }}>
+      <footer className="py-20 text-center text-gray-800 text-[11px] tracking-[1.5em] uppercase border-t border-white/5">
         MAHA VAARSHINIE RAJOO • 2026
       </footer>
     </main>
