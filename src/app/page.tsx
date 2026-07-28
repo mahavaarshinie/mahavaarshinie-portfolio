@@ -45,8 +45,11 @@ function StackSection({ id, z, className = "", bare = false, children }: { id?: 
   const [range, setRange] = useState<[number, number]>([0, 1]);
 
   const { scrollY } = useScroll();
-  const scale = useTransform(scrollY, range, [1, 0.94]);
-  const brightness = useTransform(scrollY, range, [1, 0.5]);
+  // The covered card visibly recedes: slides up with parallax, shrinks and dims
+  // while the next card passes over it — readable in both scroll directions.
+  const scale = useTransform(scrollY, range, [1, 0.86]);
+  const y = useTransform(scrollY, range, [0, -120]);
+  const brightness = useTransform(scrollY, range, [1, 0.3]);
   const filter = useMotionTemplate`brightness(${brightness})`;
 
   useEffect(() => {
@@ -70,8 +73,8 @@ function StackSection({ id, z, className = "", bare = false, children }: { id?: 
 
   return (
     <motion.section ref={ref} id={id}
-      style={{ position: "sticky", top, zIndex: z, scale, filter, transformOrigin: "center top" }}
-      className={`${bare ? "" : "bg-[#0a0a0a] border-t border-white/10 rounded-t-[3rem] shadow-[0_-30px_80px_rgba(0,0,0,0.85)]"} ${className}`}>
+      style={{ position: "sticky", top, zIndex: z, scale, y, filter, transformOrigin: "center top" }}
+      className={`${bare ? "" : "bg-[#0a0a0a] border-t border-[#D4AF37]/15 rounded-t-[3rem] shadow-[0_-40px_100px_rgba(0,0,0,0.95)]"} ${className}`}>
       {children}
     </motion.section>
   );
