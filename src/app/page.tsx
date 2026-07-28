@@ -1,7 +1,7 @@
 "use client";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
-import { USER_INFO, PROJECTS, EXPERIENCE, SKILLS, CERTIFICATIONS, PUBLICATION, EDUCATION, COCURRICULAR, WORKSHOP, Project, Workshop, HACKATHONS } from "../lib/data";
+import { USER_INFO, PROJECTS, EXPERIENCE, SKILLS, CERTIFICATIONS, PUBLICATION, EDUCATION, COCURRICULAR, WORKSHOP, Project, Workshop, HACKATHONS, ACHIEVEMENTS, Achievement } from "../lib/data";
 
 const fadeUp = { initial: { opacity: 0, y: 40 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true }, transition: { duration: 0.8 } };
 const stagger = (i: number) => ({ ...fadeUp, transition: { duration: 0.6, delay: i * 0.1 } });
@@ -30,7 +30,7 @@ export default function Portfolio() {
             className="text-xl font-bold tracking-tighter">Maha Vaarshinie</motion.span>
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
             className="hidden md:flex items-center gap-10 text-sm font-medium text-gray-400">
-            {["about", "education", "experience", "projects", "activities"].map(s => (
+            {["about", "education", "experience", "achievements", "projects", "activities"].map(s => (
               <a key={s} href={`#${s}`} className="hover:text-white transition-colors capitalize">{s}</a>
             ))}
             <a href={USER_INFO.linkedin} target="_blank"
@@ -174,6 +174,49 @@ export default function Portfolio() {
             <span>View Presentation Certificate</span>
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
           </a>
+        </div>
+      </motion.section>
+
+      {/* ACHIEVEMENTS */}
+      <motion.section id="achievements" {...fadeUp} className="py-32 px-10 border-t border-white/5">
+        <div className="max-w-6xl mx-auto">
+          <p className="text-center text-[#D4AF37] uppercase tracking-[0.4em] text-[10px] font-bold mb-20">Awards & Achievements</p>
+          <div className="flex flex-col gap-10">
+            {ACHIEVEMENTS.map((item: Achievement, i: number) => (
+              <motion.div key={i} {...stagger(i)}
+                className="grid grid-cols-1 md:grid-cols-5 gap-12 items-center bg-gradient-to-r from-[#D4AF37]/10 to-transparent border border-[#D4AF37]/20 rounded-[3rem] p-14">
+                <div className={item.certImage ? "md:col-span-3" : "md:col-span-4"}>
+                  <span className="inline-block bg-[#D4AF37] text-black text-[10px] font-black uppercase tracking-[0.2em] px-5 py-2 rounded-full mb-6 shadow-[0_0_20px_rgba(212,175,55,0.3)]">{item.award}</span>
+                  <h3 className="text-3xl font-bold mb-2 leading-tight">{item.title}</h3>
+                  <p className="text-[#D4AF37] text-sm mb-6">{item.organisation} • {item.date}</p>
+                  <p className="text-gray-400 leading-relaxed text-lg mb-8">{item.desc}</p>
+                  {item.link && (
+                    <a href={item.link} target="_blank" rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-[#D4AF37] font-bold text-sm tracking-widest uppercase border-b border-[#D4AF37] pb-1 hover:text-white transition-colors">
+                      <span>{item.linkLabel}</span>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                    </a>
+                  )}
+                </div>
+
+                {/* Certificate Image */}
+                {item.certImage && (
+                  <a href={item.certImage} target="_blank" rel="noopener noreferrer" className="md:col-span-2 block">
+                    <img src={item.certImage} alt={`${item.title} certificate`}
+                      className="rounded-2xl w-full border border-white/10 hover:scale-[1.02] hover:border-[#D4AF37]/40 transition-all duration-300" />
+                  </a>
+                )}
+
+                {/* Ranking Stat */}
+                {item.stat && (
+                  <div className="md:col-span-1 text-center md:text-right">
+                    <p className="text-6xl font-black text-[#D4AF37] tracking-tighter mb-2">{item.stat.value}</p>
+                    <p className="text-[10px] uppercase tracking-widest text-gray-500">{item.stat.label}</p>
+                  </div>
+                )}
+              </motion.div>
+            ))}
+          </div>
         </div>
       </motion.section>
 
