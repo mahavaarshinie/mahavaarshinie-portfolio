@@ -40,7 +40,7 @@ export const USER_INFO = {
   about: "Data Scientist and AI Engineer, and a fresh Data Science graduate from Multimedia University (MMU), specializing in end-to-end machine learning, deep learning, and predictive analytics. Built an award-winning deepfake detection system achieving 98.05% accuracy with a Dual-Stream Hybrid CNN — published at DIFCON and awarded a Silver Medal at iNVENTX 2026 — alongside dialect-aware NLP solutions for inclusive digital access across ASEAN languages. Experienced in building agentic AI systems with MCP and LLM integrations, automating workflows with n8n, and full-stack development of production-ready MNC dashboards and robust backend systems with API integration. Proficient in advanced database management, data visualization, and transforming complex data into actionable business intelligence that drives real-world impact.",
   email: "mahavaarshinie17@gmail.com",
   // TODO: replace with the real WhatsApp number in international format, digits only (e.g. 60123456789)
-  whatsapp: "60123456789",
+  whatsapp: "60164504068",
   linkedin: "https://www.linkedin.com/in/maha-vaarshinie-arupatha-rajoo-068205238/",
   github: "https://github.com/mahavaarshinie"
 };
