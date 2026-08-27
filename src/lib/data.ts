@@ -70,7 +70,7 @@ export const SKILLS: Skill[] = [
 ];
 
 export const EDUCATION = [
-  { institution: "Multimedia University (MMU)", degree: "Bachelor of Computer Science (Honours) — Data Science", cgpa: "3.52", date: "08/2023 – 07/2026", location: "Cyberjaya, Malaysia" },
+  { institution: "Multimedia University (MMU)", degree: "Bachelor of Computer Science (Honours) — Data Science", cgpa: "3.59", date: "08/2023 – 08/2026", location: "Cyberjaya, Malaysia" },
   { institution: "Multimedia University (MMU)", degree: "Foundation in IT — Information Technology", cgpa: "3.52", date: "08/2022 – 07/2023", location: "Cyberjaya, Malaysia" }
 ];
 
